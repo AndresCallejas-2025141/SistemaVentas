@@ -1,189 +1,186 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SistemaVentas — Iniciar Sesión</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SistemaVentas — Iniciar Sesión</title>
 
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg: #f4f6f9;
-      --card: #ffffff;
-      --primary: #10b981;
-      --primary-dark: #059669;
-      --text: #1f2937;
-      --text-light: #6b7280;
-      --border: #e5e7eb;
-    }
+        :root {
+          --bg: #f4f6f9;
+          --card: #ffffff;
+          --primary: #10b981;
+          --primary-dark: #059669;
+          --text: #1f2937;
+          --text-light: #6b7280;
+          --border: #e5e7eb;
+        }
 
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--bg);
-      height: 100vh;
-      display: flex;
-    }
+        body {
+          font-family: 'Poppins', sans-serif;
+          background: var(--bg);
+          height: 100vh;
+          display: flex;
+        }
 
-    .container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      width: 100%;
-    }
+        .container {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          width: 100%;
+        }
 
-    .left {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 60px;
-    }
+        .left {
+          background: linear-gradient(135deg, #10b981, #059669);
+          color: white;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding: 60px;
+        }
 
-    .title {
-      font-size: 36px;
-      font-weight: 700;
-      line-height: 1.2;
-      margin-bottom: 20px;
-    }
+        .title {
+          font-size: 36px;
+          font-weight: 700;
+          line-height: 1.2;
+          margin-bottom: 20px;
+        }
 
-    .right {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+        .right {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
 
-    .card {
-      background: var(--card);
-      padding: 40px;
-      border-radius: 16px;
-      width: 100%;
-      max-width: 380px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    }
+        .card {
+          background: var(--card);
+          padding: 40px;
+          border-radius: 16px;
+          width: 100%;
+          max-width: 380px;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
 
-    .card h2 {
-      margin-bottom: 10px;
-      color: var(--text);
-    }
+        .card h2 {
+          margin-bottom: 10px;
+          color: var(--text);
+        }
 
-    .field {
-      margin-bottom: 18px;
-    }
+        .field {
+          margin-bottom: 18px;
+        }
 
-    .field label {
-      font-size: 12px;
-      color: var(--text-light);
-      display: block;
-      margin-bottom: 6px;
-    }
+        .field label {
+          font-size: 12px;
+          color: var(--text-light);
+          display: block;
+          margin-bottom: 6px;
+        }
 
-    .field input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      outline: none;
-      font-size: 14px;
-    }
+        .field input {
+          width: 100%;
+          padding: 12px;
+          border-radius: 8px;
+          border: 1px solid var(--border);
+          outline: none;
+          font-size: 14px;
+        }
 
-    .field input:focus {
-      border-color: var(--primary);
-    }
+        .field input:focus {
+          border-color: var(--primary);
+        }
 
-    .forgot {
-      font-size: 12px;
-      text-align: right;
-      display: block;
-      margin-top: 5px;
-      color: var(--primary);
-      text-decoration: none;
-    }
+        .forgot {
+          font-size: 12px;
+          text-align: right;
+          display: block;
+          margin-top: 5px;
+          color: var(--primary);
+          text-decoration: none;
+        }
 
-    .btn {
-      width: 100%;
-      padding: 13px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 10px;
-    }
+        .btn {
+          width: 100%;
+          padding: 13px;
+          background: var(--primary);
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          margin-top: 10px;
+        }
 
-    .btn:hover {
-      background: var(--primary-dark);
-    }
+        .btn:hover {
+          background: var(--primary-dark);
+        }
 
-    .roles {
-      margin-top: 25px;
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-light);
-    }
+        .roles {
+          margin-top: 25px;
+          text-align: center;
+          font-size: 12px;
+          color: var(--text-light);
+        }
 
-    @media (max-width: 800px) {
-      .container {
-        grid-template-columns: 1fr;
-      }
-      .left {
-        display: none;
-      }
-    }
-  </style>
+        .error {
+          color: red;
+          font-size: 12px;
+          margin-bottom: 10px;
+        }
+
+        @media (max-width: 800px) {
+          .container {
+            grid-template-columns: 1fr;
+          }
+          .left {
+            display: none;
+          }
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="container">
 
-  <div class="left">
-    <div class="title">SistemaVentas</div>
-  </div>
-
-  <div class="right">
-    <div class="card">
-      <h2>Iniciar sesión</h2>
-
-      <div class="field">
-        <label>Usuario</label>
-        <input type="text" id="usuario" placeholder="Ingresa tu usuario">
-      </div>
-
-      <div class="field">
-        <label>Contraseña</label>
-        <input type="password" id="contraseña" placeholder="Contraseña">
-        <a href="CrearCuenta.html" class="forgot">Crear Cuenta</a>
-      </div>
-
-      <button class="btn" onclick="iniciarSesion()">
-        Entrar
-      </button>
-
-      <div class="roles">
-        Administrador · Vendedor
-      </div>
-
+    <div class="left">
+        <div class="title">SistemaVentas</div>
     </div>
-  </div>
+
+    <div class="right">
+        <div class="card">
+            <h2>Iniciar sesión</h2>
+
+            <!-- Mensaje de error si existe -->
+            <div th:if="${error}" class="error" th:text="${error}"></div>
+
+            <!-- Formulario que envía datos al controlador -->
+            <form th:action="@{/login}" method="post">
+                <div class="field">
+                    <label>Usuario</label>
+                    <input type="text" name="usuario">
+                </div>
+
+                <div class="field">
+                    <label>Contraseña</label>
+                    <input type="password" name="contraseña">
+                    <a href="CrearCuenta.html" class="forgot">Crear Cuenta</a>
+                </div>
+
+                <button class="btn" type="submit">
+                    Entrar
+                </button>
+            </form>
+
+            <div class="roles">
+                Administrador · Vendedor
+            </div>
+
+        </div>
+    </div>
 
 </div>
-
-<script>
-function iniciarSesion() {
-  const usuario = document.getElementById('usuario').value.trim();
-  const contraseña = document.getElementById('contraseña').value.trim();
-
-  if (!usuario || !contraseña) {
-    alert("Por favor completa todos los campos");
-    return;
-  }
-
-  // Si todo está correcto, redirige a home.html
-  window.location.href = 'home.html';
-}
-</script>
 
 </body>
 </html>
