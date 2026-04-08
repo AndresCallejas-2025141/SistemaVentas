@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Productos</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --bg:#f4f6f9;
+  --primary:#10b981;
+  --text:#1f2937;
+  --border:#e5e7eb;
+}
+
+body{font-family:'Poppins';background:var(--bg);}
+
+/* TOP */
+.top{
+  background:var(--primary);
+  color:#fff;
+  padding:15px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.btn{
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  padding:8px 12px;
+  border-radius:6px;
+  cursor:pointer;
+  margin-right:5px;
+}
+
+.btn-home{
+  background:#ffffff;
+  color:var(--primary);
+  border:2px solid #ffffff;
+  padding:8px 14px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+
+.btn-home:hover{
+  background:#0f766e;
+  color:#fff;
+  border-color:#0f766e;
+  transform:translateY(-1px);
+}
+
+.container{padding:20px;}
+
+table{
+  width:100%;
+  background:#fff;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:10px;
+  border-bottom:1px solid var(--border);
+}
+
+tr:hover{background:#f9fafb;}
+
+.form{
+  margin-bottom:15px;
+}
+
+input{
+  padding:8px;
+  margin-right:5px;
+  border:1px solid var(--border);
+  border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">
+  <h2>Productos</h2>
+  <button class="btn-home" onclick="location.href='Home.html'">Principal</button>
+</div>
+
+<div class="container">
+
+<div class="form">
+  <input id="codigoProducto" placeholder="Código">
+  <input id="nombreProducto" placeholder="Nombre">
+  <input id="precio" placeholder="Precio">
+  <input id="stock" placeholder="Stock">
+  <input id="estado" placeholder="Estado">
+  <button class="btn" onclick="agregar()">Agregar</button>
+  <button class="btn" onclick="editar()">Editar</button>
+  <button class="btn" onclick="eliminar()">Eliminar</button>
+  <button class="btn" onclick="actualizar()">Actualizar</button>
+</div>
+
+<table>
+<thead>
+<tr>
+  <th>codigo_producto</th>
+  <th>nombre_producto</th>
+  <th>precio</th>
+  <th>stock</th>
+  <th>estado</th>
+</tr>
+</thead>
+<tbody id="tabla"></tbody>
+</table>
+
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("productos")) || [];
+let indexActual = null;
+
+// Renderiza la tabla
+function render(){
+  let tabla = document.getElementById("tabla");
+  tabla.innerHTML = "";
+  data.forEach((p,i)=>{
+    tabla.innerHTML += `
+    <tr onclick="seleccionar(${i})">
+      <td>${p.codigoProducto}</td>
+      <td>${p.nombreProducto}</td>
+      <td>${p.precio}</td>
+      <td>${p.stock}</td>
+      <td>${p.estado}</td>
+    </tr>`;
+  });
+}
+
+// Guarda en localStorage
+function guardar(){
+  localStorage.setItem("productos", JSON.stringify(data));
+}
+
+// Limpia los inputs
+function limpiarFormulario(){
+  document.getElementById("codigoProducto").value = "";
+  document.getElementById("nombreProducto").value = "";
+  document.getElementById("precio").value = "";
+  document.getElementById("stock").value = "";
+  document.getElementById("estado").value = "";
+  indexActual = null;
+}
+
+// AGREGAR
+function agregar(){
+  let codigoProducto = document.getElementById("codigoProducto").value;
+  let nombreProducto = document.getElementById("nombreProducto").value;
+  let precio = document.getElementById("precio").value;
+  let stock = document.getElementById("stock").value;
+  let estado = document.getElementById("estado").value;
+
+  if(codigoProducto && nombreProducto && precio && stock && estado){
+    data.push({codigoProducto, nombreProducto, precio, stock, estado});
+    guardar(); 
+    render();
+    limpiarFormulario();
+  } else {
+    alert("Completa todos los campos");
+  }
+}
+
+// SELECCIONAR
+function seleccionar(i){
+  indexActual = i;
+  let p = data[i];
+  document.getElementById("codigoProducto").value = p.codigoProducto;
+  document.getElementById("nombreProducto").value = p.nombreProducto;
+  document.getElementById("precio").value = p.precio;
+  document.getElementById("stock").value = p.stock;
+  document.getElementById("estado").value = p.estado;
+}
+
+// EDITAR
+function editar(){
+  if(indexActual !== null){
+    let codigoProducto = document.getElementById("codigoProducto").value;
+    let nombreProducto = document.getElementById("nombreProducto").value;
+    let precio = document.getElementById("precio").value;
+    let stock = document.getElementById("stock").value;
+    let estado = document.getElementById("estado").value;
+
+    if(codigoProducto && nombreProducto && precio && stock && estado){
+      data[indexActual] = {codigoProducto, nombreProducto, precio, stock, estado};
+      guardar();
+      render();
+      limpiarFormulario();
+    } else {
+      alert("Completa todos los campos");
+    }
+  } else {
+    alert("Selecciona un producto haciendo clic en la tabla");
+  }
+}
+
+// ELIMINAR
+function eliminar(){
+  if(indexActual !== null){
+    data.splice(indexActual, 1);
+    guardar();
+    render();
+    limpiarFormulario();
+  } else {
+    alert("Selecciona un producto haciendo clic en la tabla");
+  }
+}
+
+// ACTUALIZAR
+function actualizar(){
+  render();
+  limpiarFormulario();
+}
+
+// Inicializa la tabla
+render();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Usuarios</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --bg:#f4f6f9;
+  --primary:#10b981;
+  --text:#1f2937;
+  --border:#e5e7eb;
+}
+
+body{font-family:'Poppins';background:var(--bg);}
+
+/* TOP */
+.top{
+  background:var(--primary);
+  color:#fff;
+  padding:15px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.btn{
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  padding:8px 12px;
+  border-radius:6px;
+  cursor:pointer;
+  margin-right:5px;
+}
+
+.btn-home{
+  background:#ffffff;
+  color:var(--primary);
+  border:2px solid #ffffff;
+  padding:8px 14px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+
+.btn-home:hover{
+  background:#0f766e;
+  color:#fff;
+  border-color:#0f766e;
+  transform:translateY(-1px);
+}
+
+.container{padding:20px;}
+
+table{
+  width:100%;
+  background:#fff;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:10px;
+  border-bottom:1px solid var(--border);
+}
+
+tr:hover{background:#f9fafb;}
+
+.form{
+  margin-bottom:15px;
+}
+
+input{
+  padding:8px;
+  margin-right:5px;
+  border:1px solid var(--border);
+  border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">
+  <h2>Usuarios</h2>
+  <button class="btn-home" onclick="location.href='Home.html'">Principal</button>
+</div>
+
+<div class="container">
+
+<div class="form">
+  <input id="codigoUsuario" placeholder="Código">
+  <input id="username" placeholder="Username">
+  <input id="password" placeholder="Password">
+  <input id="email" placeholder="Email">
+  <input id="role" placeholder="Role">
+  <input id="estado" placeholder="Estado">
+  <button class="btn" onclick="agregar()">Agregar</button>
+  <button class="btn" onclick="editar()">Editar</button>
+  <button class="btn" onclick="eliminar()">Eliminar</button>
+  <button class="btn" onclick="actualizar()">Actualizar</button>
+</div>
+
+<table>
+<thead>
+<tr>
+  <th>codigo_usuario</th>
+  <th>Username</th>
+  <th>Password</th>
+  <th>Email</th>
+  <th>Role</th>
+  <th>Estado</th>
+</tr>
+</thead>
+<tbody id="tabla"></tbody>
+</table>
+
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("usuarios")) || [];
+let indexActual = null;
+
+// Renderiza la tabla
+function render(){
+  let tabla = document.getElementById("tabla");
+  tabla.innerHTML = "";
+  data.forEach((u,i)=>{
+    tabla.innerHTML += `
+    <tr onclick="seleccionar(${i})">
+      <td>${u.codigoUsuario}</td>
+      <td>${u.username}</td>
+      <td>${u.password}</td>
+      <td>${u.email}</td>
+      <td>${u.role}</td>
+      <td>${u.estado}</td>
+    </tr>`;
+  });
+}
+
+// Guarda en localStorage
+function guardar(){
+  localStorage.setItem("usuarios", JSON.stringify(data));
+}
+
+// Limpia los inputs
+function limpiarFormulario(){
+  document.getElementById("codigoUsuario").value = "";
+  document.getElementById("username").value = "";
+  document.getElementById("password").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("role").value = "";
+  document.getElementById("estado").value = "";
+  indexActual = null;
+}
+
+// AGREGAR
+function agregar(){
+  let codigoUsuario = document.getElementById("codigoUsuario").value;
+  let username = document.getElementById("username").value;
+  let password = document.getElementById("password").value;
+  let email = document.getElementById("email").value;
+  let role = document.getElementById("role").value;
+  let estado = document.getElementById("estado").value;
+
+  if(codigoUsuario && username && password && email && role && estado){
+    data.push({codigoUsuario, username, password, email, role, estado});
+    guardar();
+    render();
+    limpiarFormulario();
+  } else {
+    alert("Completa todos los campos");
+  }
+}
+
+// SELECCIONAR
+function seleccionar(i){
+  indexActual = i;
+  let u = data[i];
+  document.getElementById("codigoUsuario").value = u.codigoUsuario;
+  document.getElementById("username").value = u.username;
+  document.getElementById("password").value = u.password;
+  document.getElementById("email").value = u.email;
+  document.getElementById("role").value = u.role;
+  document.getElementById("estado").value = u.estado;
+}
+
+// EDITAR
+function editar(){
+  if(indexActual !== null){
+    let codigoUsuario = document.getElementById("codigoUsuario").value;
+    let username = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
+    let email = document.getElementById("email").value;
+    let role = document.getElementById("role").value;
+    let estado = document.getElementById("estado").value;
+
+    if(codigoUsuario && username && password && email && role && estado){
+      data[indexActual] = {codigoUsuario, username, password, email, role, estado};
+      guardar();
+      render();
+      limpiarFormulario();
+    } else {
+      alert("Completa todos los campos");
+    }
+  } else {
+    alert("Selecciona un usuario haciendo clic en la tabla");
+  }
+}
+
+// ELIMINAR
+function eliminar(){
+  if(indexActual !== null){
+    data.splice(indexActual, 1);
+    guardar();
+    render();
+    limpiarFormulario();
+  } else {
+    alert("Selecciona un usuario haciendo clic en la tabla");
+  }
+}
+
+// ACTUALIZAR
+function actualizar(){
+  render();
+  limpiarFormulario();
+}
+
+// Inicializa la tabla
+render();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ventas</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --bg:#f4f6f9;
+  --primary:#10b981;
+  --text:#1f2937;
+  --border:#e5e7eb;
+}
+
+body{font-family:'Poppins';background:var(--bg);}
+
+/* TOP */
+.top{
+  background:var(--primary);
+  color:#fff;
+  padding:15px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.btn{
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  padding:8px 12px;
+  border-radius:6px;
+  cursor:pointer;
+  margin-right:5px;
+}
+
+.btn-home{
+  background:#ffffff;
+  color:var(--primary);
+  border:2px solid #ffffff;
+  padding:8px 14px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+
+.btn-home:hover{
+  background:#0f766e;
+  color:#fff;
+  border-color:#0f766e;
+  transform:translateY(-1px);
+}
+
+.container{padding:20px;}
+
+table{
+  width:100%;
+  background:#fff;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:10px;
+  border-bottom:1px solid var(--border);
+}
+
+tr:hover{background:#f9fafb;}
+
+.form{
+  margin-bottom:15px;
+}
+
+input{
+  padding:8px;
+  margin-right:5px;
+  border:1px solid var(--border);
+  border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">
+  <h2>Ventas</h2>
+  <button class="btn-home" onclick="location.href='Home.html'">Principal</button>
+</div>
+
+<div class="container">
+
+<div class="form">
+  <input id="codigoVenta" placeholder="Código">
+  <input id="fechaVenta" placeholder="Fecha">
+  <input id="total" placeholder="Total">
+  <input id="estado" placeholder="Estado">
+  <input id="dpiCliente" placeholder="DPI del Cliente">
+  <input id="codigoUsuario" placeholder="Código del Usuario">
+  <button class="btn" onclick="agregar()">Agregar</button>
+  <button class="btn" onclick="editar()">Editar</button>
+  <button class="btn" onclick="eliminar()">Eliminar</button>
+  <button class="btn" onclick="actualizar()">Actualizar</button>
+</div>
+
+<table>
+<thead>
+<tr>
+  <th>codigo_venta</th>
+  <th>fecha_venta</th>
+  <th>total</th>
+  <th>estado</th>
+  <th>clientes_dpi_cliente</th>
+  <th>usuarios_codigo_usuario</th>
+</tr>
+</thead>
+<tbody id="tabla"></tbody>
+</table>
+
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("ventas")) || [];
+let indexActual = null;
+
+function render(){
+  let tabla = document.getElementById("tabla");
+  tabla.innerHTML = "";
+  data.forEach((v, i) => {
+    tabla.innerHTML += `
+    <tr onclick="seleccionar(${i})">
+      <td>${v.codigoVenta}</td>
+      <td>${v.fechaVenta}</td>
+      <td>${v.total}</td>
+      <td>${v.estado}</td>
+      <td>${v.dpiCliente}</td>
+      <td>${v.codigoUsuario}</td>
+    </tr>`;
+  });
+}
+
+function guardar(){
+  localStorage.setItem("ventas", JSON.stringify(data));
+}
+
+function agregar(){
+  let codigoVenta = document.getElementById("codigoVenta").value;
+  let fechaVenta = document.getElementById("fechaVenta").value;
+  let total = document.getElementById("total").value;
+  let estado = document.getElementById("estado").value;
+  let dpiCliente = document.getElementById("dpiCliente").value;
+  let codigoUsuario = document.getElementById("codigoUsuario").value;
+
+  if(codigoVenta && fechaVenta && total && estado && dpiCliente && codigoUsuario){
+    data.push({codigoVenta, fechaVenta, total, estado, dpiCliente, codigoUsuario});
+    guardar();
+    render();
+    limpiarFormulario();
+  } else {
+    alert("Completa todos los campos");
+  }
+}
+
+function seleccionar(i){
+  indexActual = i;
+  let v = data[i];
+  document.getElementById("codigoVenta").value = v.codigoVenta;
+  document.getElementById("fechaVenta").value = v.fechaVenta;
+  document.getElementById("total").value = v.total;
+  document.getElementById("estado").value = v.estado;
+  document.getElementById("dpiCliente").value = v.dpiCliente;
+  document.getElementById("codigoUsuario").value = v.codigoUsuario;
+}
+
+function editar(){
+  if(indexActual !== null){
+    let codigoVenta = document.getElementById("codigoVenta").value;
+    let fechaVenta = document.getElementById("fechaVenta").value;
+    let total = document.getElementById("total").value;
+    let estado = document.getElementById("estado").value;
+    let dpiCliente = document.getElementById("dpiCliente").value;
+    let codigoUsuario = document.getElementById("codigoUsuario").value;
+
+    if(codigoVenta && fechaVenta && total && estado && dpiCliente && codigoUsuario){
+      data[indexActual] = {codigoVenta, fechaVenta, total, estado, dpiCliente, codigoUsuario};
+      guardar();
+      render();
+      limpiarFormulario();
+    } else {
+      alert("Completa todos los campos");
+    }
+  } else {
+    alert("Selecciona una venta haciendo clic en la tabla");
+  }
+}
+
+function eliminar(){
+  if(indexActual !== null){
+    data.splice(indexActual, 1);
+    guardar();
+    render();
+    limpiarFormulario();
+  } else {
+    alert("Selecciona una venta haciendo clic en la tabla");
+  }
+}
+
+function actualizar(){
+  render();          
+  limpiarFormulario(); 
+}
+
+function limpiarFormulario(){
+  document.getElementById("codigoVenta").value = "";
+  document.getElementById("fechaVenta").value = "";
+  document.getElementById("total").value = "";
+  document.getElementById("estado").value = "";
+  document.getElementById("dpiCliente").value = "";
+  document.getElementById("codigoUsuario").value = "";
+  indexActual = null;
+}
+
+render();
+</script>
+
+</body>
+</html>
