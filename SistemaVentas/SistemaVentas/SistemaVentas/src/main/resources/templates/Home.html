@@ -1,138 +1,136 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Inicio — SistemaVentas</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio — SistemaVentas</title>
 
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
 
+        :root{
+          --bg:#f4f6f9;
+          --primary:#10b981;
+          --text:#1f2937;
+          --text-light:#6b7280;
+        }
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
+        body{
+          font-family:'Poppins',sans-serif;
+          background:var(--bg);
+        }
 
-:root{
-  --bg:#f4f6f9;
-  --primary:#10b981;
-  --text:#1f2937;
-  --text-light:#6b7280;
-}
+        /* TOP BAR */
+        .top-bar{
+          position:fixed;
+          top:0;
+          left:0;
+          width:100%;
+          height:100px;
+          background:#10b981;
+          display:flex;
+          align-items:center;
+          justify-content:space-between;
+          padding:0 20px;
+          color:#fff;
+          z-index:10;
+        }
 
-body{
-  font-family:'Poppins',sans-serif;
-  background:var(--bg);
-}
+        .top-bar h2{
+          font-size:16px;
+          font-weight:600;
+        }
 
-/* TOP BAR */
-.top-bar{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100px;
-  background:#10b981;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 20px;
-  color:#fff;
-  z-index:10;
-}
+        .logout{
+          background:#fff;
+          color:#10b981;
+          border:none;
+          padding:8px 14px;
+          border-radius:8px;
+          cursor:pointer;
+          font-weight:600;
+          font-size:13px;
+        }
 
-.top-bar h2{
-  font-size:16px;
-  font-weight:600;
-}
+        .logout:hover{
+          background:#f3f4f6;
+        }
 
-.logout{
-  background:#fff;
-  color:#10b981;
-  border:none;
-  padding:8px 14px;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:600;
-  font-size:13px;
-}
+        /* HEADER */
+        .header{
+          padding:100px 25px 25px;
+          text-align:center;
+        }
 
-.logout:hover{
-  background:#f3f4f6;
-}
+        .header h1{
+          color:var(--text);
+        }
 
-/* HEADER */
-.header{
-  padding:100px 25px 25px;
-  text-align:center;
-}
+        .header p{
+          color:var(--text-light);
+          font-size:14px;
+        }
 
-.header h1{
-  color:var(--text);
-}
+        /* GRID */
+        .grid{
+          display:grid;
+          grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+          gap:20px;
+          padding:30px;
+        }
 
-.header p{
-  color:var(--text-light);
-  font-size:14px;
-}
+        /* CARD */
+        .card{
+          position:relative;
+          border-radius:20px;
+          overflow:hidden;
+          cursor:pointer;
+          height:180px;
+          transition:transform .2s, box-shadow .2s;
+          display:block;
+          text-decoration:none;
+        }
 
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:20px;
-  padding:30px;
-}
+        .card:hover{
+          transform:translateY(-5px);
+          box-shadow:0 10px 25px rgba(0,0,0,0.15);
+        }
 
-/* CARD */
-.card{
-  position:relative;
-  border-radius:20px;
-  overflow:hidden;
-  cursor:pointer;
-  height:180px;
-  transition:transform .2s, box-shadow .2s;
-}
+        .card img{
+          width:100%;
+          height:100%;
+          object-fit:cover;
+        }
 
-.card:hover{
-  transform:translateY(-5px);
-  box-shadow:0 10px 25px rgba(0,0,0,0.15);
-}
+        /* OVERLAY */
+        .overlay{
+          position:absolute;
+          inset:0;
+          background:linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+          display:flex;
+          align-items:flex-end;
+          padding:15px;
+        }
 
-.card img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
+        .overlay h3{
+          color:#fff;
+          font-size:18px;
+        }
 
-/* OVERLAY */
-.overlay{
-  position:absolute;
-  inset:0;
-  background:linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-  display:flex;
-  align-items:flex-end;
-  padding:15px;
-}
-
-.overlay h3{
-  color:#fff;
-  font-size:18px;
-}
-
-/* RESPONSIVE */
-@media(max-width:600px){
-  .card{height:150px;}
-}
-</style>
+        /* RESPONSIVE */
+        @media(max-width:600px){
+          .card{height:150px;}
+        }
+    </style>
 </head>
 
 <body>
 
 <!-- FRANJA SUPERIOR -->
 <div class="top-bar">
-  <h2>SistemaVentas</h2>
-  <h1>Selecciona una vista</h1>
-  <button class="logout" onclick="window.location.href='login.html'">
-    Cerrar sesión
-  </button>
+    <h2>SistemaVentas</h2>
+    <h1>Selecciona una vista</h1>
+    <a th:href="@{/login}" class="logout">Cerrar sesión</a>
 </div>
 
 <div class="header">
@@ -140,40 +138,40 @@ body{
 
 <div class="grid">
 
-  <div class="card" onclick="location.href='ventas.html'">
-    <img src="https://th.bing.com/th/id/R.0ff67b2000b31398a199151cbd186f0d?rik=Vum4kUA8IZQejw&pid=ImgRaw&r=0">
-    <div class="overlay">
-      <h3>Ventas</h3>
-    </div>
-  </div>
+    <a th:href="@{/ventas}" class="card">
+        <img src="https://th.bing.com/th/id/R.0ff67b2000b31398a199151cbd186f0d?rik=Vum4kUA8IZQejw&pid=ImgRaw&r=0" alt="Ventas">
+        <div class="overlay">
+            <h3>Ventas</h3>
+        </div>
+    </a>
 
-  <div class="card" onclick="location.href='detalleventas.html'">
-    <img src="https://cdn-icons-png.flaticon.com/512/14931/14931813.png">
-    <div class="overlay">
-      <h3>Detalles de Ventas</h3>
-    </div>
-  </div>
+    <a th:href="@{/detalleventas}" class="card">
+        <img src="https://cdn-icons-png.flaticon.com/512/14931/14931813.png" alt="Detalle de Ventas">
+        <div class="overlay">
+            <h3>Detalles de Ventas</h3>
+        </div>
+    </a>
 
-  <div class="card" onclick="location.href='productos.html'">
-    <img src="https://www.dobleclic.com/wp-content/uploads/2011/04/logotipos.png">
-    <div class="overlay">
-      <h3>Productos</h3>
-    </div>
-  </div>
+    <a th:href="@{/productos}" class="card">
+        <img src="https://www.dobleclic.com/wp-content/uploads/2011/04/logotipos.png" alt="Productos">
+        <div class="overlay">
+            <h3>Productos</h3>
+        </div>
+    </a>
 
-  <div class="card" onclick="location.href='clientes.html'">
-    <img src="https://static.vecteezy.com/system/resources/previews/022/772/596/non_2x/business-people-icon-editable-eps-symbol-illustration-vector.jpg">
-    <div class="overlay">
-      <h3>Clientes</h3>
-    </div>
-  </div>
+    <a th:href="@{/clientes}" class="card">
+        <img src="https://static.vecteezy.com/system/resources/previews/022/772/596/non_2x/business-people-icon-editable-eps-symbol-illustration-vector.jpg" alt="Clientes">
+        <div class="overlay">
+            <h3>Clientes</h3>
+        </div>
+    </a>
 
-  <div class="card" onclick="location.href='usuarios.html'">
-    <img src="https://tse3.mm.bing.net/th/id/OIP.w2McZSq-EYWxh02iSvC3xwHaHa?rs=1&pid=ImgDetMain&o=7&rm=3">
-    <div class="overlay">
-      <h3>Usuarios</h3>
-    </div>
-  </div>
+    <a th:href="@{/usuarios}" class="card">
+        <img src="https://tse3.mm.bing.net/th/id/OIP.w2McZSq-EYWxh02iSvC3xwHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Usuarios">
+        <div class="overlay">
+            <h3>Usuarios</h3>
+        </div>
+    </a>
 
 </div>
 
