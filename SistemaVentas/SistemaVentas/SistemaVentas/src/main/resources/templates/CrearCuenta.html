@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -43,7 +43,6 @@
     .title {
       font-size: 36px;
       font-weight: 700;
-      line-height: 1.2;
       margin-bottom: 20px;
     }
 
@@ -89,21 +88,11 @@
       padding: 12px;
       border-radius: 8px;
       border: 1px solid var(--border);
-      outline: none;
       font-size: 14px;
     }
 
     .field input:focus {
       border-color: var(--primary);
-    }
-
-    .forgot {
-      font-size: 12px;
-      text-align: right;
-      display: block;
-      margin-top: 5px;
-      color: var(--primary);
-      text-decoration: none;
     }
 
     .btn {
@@ -120,6 +109,15 @@
 
     .btn:hover {
       background: var(--primary-dark);
+    }
+
+    .forgot {
+      font-size: 12px;
+      text-align: right;
+      display: block;
+      margin-top: 10px;
+      color: var(--primary);
+      text-decoration: none;
     }
 
     .roles {
@@ -147,7 +145,7 @@
   <!-- LEFT -->
   <div class="left">
     <div class="title">SistemaVentas</div>
-    <div class="desc">Registrate y crea un nuevo usuario</div>
+    <div class="desc">Regístrate y crea un nuevo usuario</div>
   </div>
 
   <!-- RIGHT -->
@@ -155,26 +153,31 @@
     <div class="card">
       <h2>Crear Cuenta</h2>
 
-      <div class="field">
-        <label>Usuario</label>
-        <input type="text" id="usuario" placeholder="Elige un nombre de usuario">
-      </div>
+      <!-- FORMULARIO THYMELEAF -->
+      <form th:action="@{/registro}" th:object="${usuario}" method="post">
 
-      <div class="field">
-        <label>Contraseña</label>
-        <input type="password" id="contraseña" placeholder="Crea tu contraseña">
-      </div>
+        <div class="field">
+          <label>Usuario</label>
+          <input type="text" th:field="*{username}" placeholder="Elige un nombre de usuario">
+        </div>
 
-      <div class="field">
-        <label>Confirmar Contraseña</label>
-        <input type="password" id="confirmar" placeholder="Confirma tu contraseña">
-      </div>
+        <div class="field">
+          <label>Contraseña</label>
+          <input type="password" th:field="*{password}" placeholder="Crea tu contraseña">
+        </div>
 
-      <button class="btn" onclick="crearCuenta()">
-        Crear Cuenta
-      </button>
+        <div class="field">
+          <label>Confirmar contraseña</label>
+          <input type="password" th:field="*{confirmPassword}" placeholder="Confirma tu contraseña">
+        </div>
 
-      <a href="Login.html" class="forgot">Ya tengo cuenta</a>
+        <button type="submit" class="btn">
+          Crear Cuenta
+        </button>
+
+      </form>
+
+      <a th:href="@{/login}" class="forgot">Ya tengo cuenta</a>
 
       <div class="roles">
         Administrador · Vendedor
@@ -184,26 +187,6 @@
   </div>
 
 </div>
-
-<script>
-function crearCuenta() {
-  const usuario = document.getElementById('usuario').value.trim();
-  const contraseña = document.getElementById('contraseña').value.trim();
-  const confirmar = document.getElementById('confirmar').value.trim();
-
-  if (!usuario || !contraseña || !confirmar) {
-    alert("Todos los campos deben estar llenos");
-    return;
-  }
-
-  if (contraseña !== confirmar) {
-    alert("Las contraseñas no coinciden");
-    return;
-  }
-
-  window.location.href = 'Login.html';
-}
-</script>
 
 </body>
 </html>
