@@ -122,117 +122,137 @@ input{
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem("detalleVentas")) || [];
-let indexActual = null;
 
-// Dibuja la tabla
-function render(){
-  let tabla = document.getElementById("tabla");
-  tabla.innerHTML = "";
-  data.forEach((d,i)=>{
-    tabla.innerHTML += `
-    <tr onclick="seleccionar(${i})">
-      <td>${d.codigoDetalleVenta}</td>
-      <td>${d.cantidad}</td>
-      <td>${d.precioUnitario}</td>
-      <td>${d.subTotal}</td>
-      <td>${d.codigoProducto}</td>
-      <td>${d.codigoVenta}</td>
-    </tr>`;
-  });
-}
+    let indexActual = null;
 
-// Guarda en localStorage
-function guardar(){
-  localStorage.setItem("detalleVentas", JSON.stringify(data));
-}
+    // LISTAR
+    async function render(){
+      let res = await fetch("/api/detalleventa");
+      let data = await res.json();
 
-// Limpia los inputs
-function limpiarFormulario(){
-  document.getElementById("codigoDetalleVenta").value = "";
-  document.getElementById("cantidad").value = "";
-  document.getElementById("precioUnitario").value = "";
-  document.getElementById("subTotal").value = "";
-  document.getElementById("codigoProducto").value = "";
-  document.getElementById("codigoVenta").value = "";
-  indexActual = null;
-}
+      let tabla = document.getElementById("tabla");
+      tabla.innerHTML = "";
 
-// AGREGAR
-function agregar(){
-  let codigoDetalleVenta = document.getElementById("codigoDetalleVenta").value;
-  let cantidad = document.getElementById("cantidad").value;
-  let precioUnitario = document.getElementById("precioUnitario").value;
-  let subTotal = document.getElementById("subTotal").value;
-  let codigoProducto = document.getElementById("codigoProducto").value;
-  let codigoVenta = document.getElementById("codigoVenta").value;
+      data.forEach((d)=>{
 
-  if(codigoDetalleVenta && cantidad && precioUnitario && subTotal && codigoProducto && codigoVenta){
-    data.push({codigoDetalleVenta, cantidad, precioUnitario, subTotal, codigoProducto, codigoVenta});
-    guardar(); 
-    render();
-    limpiarFormulario();
-  } else {
-    alert("Completa todos los campos");
-  }
-}
+        let codigoProducto = d.codigoProducto ?? "";
+        let codigoVenta = d.codigoVenta ?? "";
 
-// SELECCIONAR
-function seleccionar(i){
-  indexActual = i;
-  let d = data[i];
-  document.getElementById("codigoDetalleVenta").value = d.codigoDetalleVenta;
-  document.getElementById("cantidad").value = d.cantidad;
-  document.getElementById("precioUnitario").value = d.precioUnitario;
-  document.getElementById("subTotal").value = d.subTotal;
-  document.getElementById("codigoProducto").value = d.codigoProducto;
-  document.getElementById("codigoVenta").value = d.codigoVenta;
-}
+        tabla.innerHTML += `
+        <tr onclick="seleccionar(
+          ${d.codigoDetalleVenta},
+          ${d.cantidad},
+          ${d.precioUnitario},
+          ${d.subtotal},
+          ${codigoProducto},
+          ${codigoVenta}
+        )">
+          <td>${d.codigoDetalleVenta}</td>
+          <td>${d.cantidad}</td>
+          <td>${d.precioUnitario}</td>
+          <td>${d.subtotal}</td>
+          <td>${codigoProducto}</td>
+          <td>${codigoVenta}</td>
+        </tr>`;
+      });
+    }
 
-// EDITAR
-function editar(){
-  if(indexActual !== null){
-    let codigoDetalleVenta = document.getElementById("codigoDetalleVenta").value;
-    let cantidad = document.getElementById("cantidad").value;
-    let precioUnitario = document.getElementById("precioUnitario").value;
-    let subTotal = document.getElementById("subTotal").value;
-    let codigoProducto = document.getElementById("codigoProducto").value;
-    let codigoVenta = document.getElementById("codigoVenta").value;
+    // SELECCIONAR
+    function seleccionar(id, cantidad, precioUnitario, subtotal, codigoProducto, codigoVenta){
 
-    if(codigoDetalleVenta && cantidad && precioUnitario && subTotal && codigoProducto && codigoVenta){
-      data[indexActual] = {codigoDetalleVenta, cantidad, precioUnitario, subTotal, codigoProducto, codigoVenta};
-      guardar();
+      indexActual = id;
+
+      document.getElementById("codigoDetalleVenta").value = id;
+      document.getElementById("cantidad").value = cantidad;
+      document.getElementById("precioUnitario").value = precioUnitario;
+      document.getElementById("subTotal").value = subtotal;
+      document.getElementById("codigoProducto").value = codigoProducto;
+      document.getElementById("codigoVenta").value = codigoVenta;
+    }
+
+    // LIMPIAR
+    function limpiarFormulario(){
+      document.getElementById("codigoDetalleVenta").value = "";
+      document.getElementById("cantidad").value = "";
+      document.getElementById("precioUnitario").value = "";
+      document.getElementById("subTotal").value = "";
+      document.getElementById("codigoProducto").value = "";
+      document.getElementById("codigoVenta").value = "";
+      indexActual = null;
+    }
+
+    // AGREGAR (SIN ID)
+    async function agregar(){
+
+      let detalleVenta = {
+        cantidad: document.getElementById("cantidad").value,
+        precioUnitario: document.getElementById("precioUnitario").value,
+        subtotal: document.getElementById("subTotal").value,
+        codigoProducto: document.getElementById("codigoProducto").value,
+        codigoVenta: document.getElementById("codigoVenta").value
+      };
+
+      await fetch("/api/detalleventa", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(detalleVenta)
+      });
+
       render();
       limpiarFormulario();
-    } else {
-      alert("Completa todos los campos");
     }
-  } else {
-    alert("Selecciona un detalle haciendo clic en la tabla");
-  }
-}
 
-// ELIMINAR
-function eliminar(){
-  if(indexActual !== null){
-    data.splice(indexActual, 1);
-    guardar();
+    // EDITAR (ID SOLO EN URL)
+    async function editar(){
+
+      if(indexActual == null){
+        alert("Selecciona un registro");
+        return;
+      }
+
+      let detalleVenta = {
+        cantidad: document.getElementById("cantidad").value,
+        precioUnitario: document.getElementById("precioUnitario").value,
+        subtotal: document.getElementById("subTotal").value,
+        codigoProducto: document.getElementById("codigoProducto").value,
+        codigoVenta: document.getElementById("codigoVenta").value
+      };
+
+      await fetch(`/api/detalleventa/${indexActual}`, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(detalleVenta)
+      });
+
+      render();
+      limpiarFormulario();
+    }
+
+    // ELIMINAR
+    async function eliminar(){
+
+      if(indexActual == null){
+        alert("Selecciona un registro");
+        return;
+      }
+
+      await fetch(`/api/detalleventa/${indexActual}`, {
+        method: "DELETE"
+      });
+
+      render();
+      limpiarFormulario();
+    }
+
+    // ACTUALIZAR
+    function actualizar(){
+      render();
+      limpiarFormulario();
+    }
+
+    // INICIAL
     render();
-    limpiarFormulario();
-  } else {
-    alert("Selecciona un detalle haciendo clic en la tabla");
-  }
-}
 
-// ACTUALIZAR
-function actualizar(){
-  render();
-  limpiarFormulario();
-}
-
-// Inicializa la tabla
-render();
 </script>
-
 </body>
 </html>
