@@ -122,108 +122,137 @@ input{
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem("ventas")) || [];
-let indexActual = null;
 
-function render(){
-  let tabla = document.getElementById("tabla");
-  tabla.innerHTML = "";
-  data.forEach((v, i) => {
-    tabla.innerHTML += `
-    <tr onclick="seleccionar(${i})">
-      <td>${v.codigoVenta}</td>
-      <td>${v.fechaVenta}</td>
-      <td>${v.total}</td>
-      <td>${v.estado}</td>
-      <td>${v.dpiCliente}</td>
-      <td>${v.codigoUsuario}</td>
-    </tr>`;
-  });
-}
+    let indexActual = null;
 
-function guardar(){
-  localStorage.setItem("ventas", JSON.stringify(data));
-}
+    // LISTAR
+    async function render(){
+      let res = await fetch("/api/ventas");
+      let data = await res.json();
 
-function agregar(){
-  let codigoVenta = document.getElementById("codigoVenta").value;
-  let fechaVenta = document.getElementById("fechaVenta").value;
-  let total = document.getElementById("total").value;
-  let estado = document.getElementById("estado").value;
-  let dpiCliente = document.getElementById("dpiCliente").value;
-  let codigoUsuario = document.getElementById("codigoUsuario").value;
+      let tabla = document.getElementById("tabla");
+      tabla.innerHTML = "";
 
-  if(codigoVenta && fechaVenta && total && estado && dpiCliente && codigoUsuario){
-    data.push({codigoVenta, fechaVenta, total, estado, dpiCliente, codigoUsuario});
-    guardar();
-    render();
-    limpiarFormulario();
-  } else {
-    alert("Completa todos los campos");
-  }
-}
+      data.forEach((v)=>{
 
-function seleccionar(i){
-  indexActual = i;
-  let v = data[i];
-  document.getElementById("codigoVenta").value = v.codigoVenta;
-  document.getElementById("fechaVenta").value = v.fechaVenta;
-  document.getElementById("total").value = v.total;
-  document.getElementById("estado").value = v.estado;
-  document.getElementById("dpiCliente").value = v.dpiCliente;
-  document.getElementById("codigoUsuario").value = v.codigoUsuario;
-}
+        let dpiCliente = v.dpiCliente ?? "";
+        let codigoUsuario = v.codigoUsuario ?? "";
 
-function editar(){
-  if(indexActual !== null){
-    let codigoVenta = document.getElementById("codigoVenta").value;
-    let fechaVenta = document.getElementById("fechaVenta").value;
-    let total = document.getElementById("total").value;
-    let estado = document.getElementById("estado").value;
-    let dpiCliente = document.getElementById("dpiCliente").value;
-    let codigoUsuario = document.getElementById("codigoUsuario").value;
+        tabla.innerHTML += `
+        <tr onclick="seleccionar(
+          ${v.codigoVenta},
+          '${v.fechaVenta}',
+          ${v.total},
+          '${v.estado}',
+          ${dpiCliente},
+          ${codigoUsuario}
+        )">
+          <td>${v.codigoVenta}</td>
+          <td>${v.fechaVenta}</td>
+          <td>${v.total}</td>
+          <td>${v.estado}</td>
+          <td>${dpiCliente}</td>
+          <td>${codigoUsuario}</td>
+        </tr>`;
+      });
+    }
 
-    if(codigoVenta && fechaVenta && total && estado && dpiCliente && codigoUsuario){
-      data[indexActual] = {codigoVenta, fechaVenta, total, estado, dpiCliente, codigoUsuario};
-      guardar();
+    // SELECCIONAR
+    function seleccionar(codigoVenta, fechaVenta, total, estado, dpiCliente, codigoUsuario){
+
+      indexActual = codigoVenta;
+
+      document.getElementById("codigoVenta").value = codigoVenta;
+      document.getElementById("fechaVenta").value = fechaVenta;
+      document.getElementById("total").value = total;
+      document.getElementById("estado").value = estado;
+      document.getElementById("dpiCliente").value = dpiCliente;
+      document.getElementById("codigoUsuario").value = codigoUsuario;
+    }
+
+    // LIMPIAR
+    function limpiarFormulario(){
+      document.getElementById("codigoVenta").value = "";
+      document.getElementById("fechaVenta").value = "";
+      document.getElementById("total").value = "";
+      document.getElementById("estado").value = "";
+      document.getElementById("dpiCliente").value = "";
+      document.getElementById("codigoUsuario").value = "";
+      indexActual = null;
+    }
+
+    // AGREGAR
+    async function agregar(){
+
+      let venta = {
+        fechaVenta: document.getElementById("fechaVenta").value,
+        total: document.getElementById("total").value,
+        estado: document.getElementById("estado").value,
+        dpiCliente: document.getElementById("dpiCliente").value,
+        codigoUsuario: document.getElementById("codigoUsuario").value
+      };
+
+      await fetch("/api/ventas", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(venta)
+      });
+
       render();
       limpiarFormulario();
-    } else {
-      alert("Completa todos los campos");
     }
-  } else {
-    alert("Selecciona una venta haciendo clic en la tabla");
-  }
-}
 
-function eliminar(){
-  if(indexActual !== null){
-    data.splice(indexActual, 1);
-    guardar();
+    // EDITAR
+    async function editar(){
+
+      if(indexActual == null){
+        alert("Selecciona una venta");
+        return;
+      }
+
+      let venta = {
+        fechaVenta: document.getElementById("fechaVenta").value,
+        total: document.getElementById("total").value,
+        estado: document.getElementById("estado").value,
+        dpiCliente: document.getElementById("dpiCliente").value,
+        codigoUsuario: document.getElementById("codigoUsuario").value
+      };
+
+      await fetch(`/api/ventas/${indexActual}`, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(venta)
+      });
+
+      render();
+      limpiarFormulario();
+    }
+
+    // ELIMINAR
+    async function eliminar(){
+
+      if(indexActual == null){
+        alert("Selecciona una venta");
+        return;
+      }
+
+      await fetch(`/api/ventas/${indexActual}`, {
+        method: "DELETE"
+      });
+
+      render();
+      limpiarFormulario();
+    }
+
+    // ACTUALIZAR
+    function actualizar(){
+      render();
+      limpiarFormulario();
+    }
+
+    // INICIAL
     render();
-    limpiarFormulario();
-  } else {
-    alert("Selecciona una venta haciendo clic en la tabla");
-  }
-}
 
-function actualizar(){
-  render();          
-  limpiarFormulario(); 
-}
-
-function limpiarFormulario(){
-  document.getElementById("codigoVenta").value = "";
-  document.getElementById("fechaVenta").value = "";
-  document.getElementById("total").value = "";
-  document.getElementById("estado").value = "";
-  document.getElementById("dpiCliente").value = "";
-  document.getElementById("codigoUsuario").value = "";
-  indexActual = null;
-}
-
-render();
 </script>
-
 </body>
 </html>
