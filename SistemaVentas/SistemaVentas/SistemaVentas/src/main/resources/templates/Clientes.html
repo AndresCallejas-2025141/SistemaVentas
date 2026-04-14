@@ -120,112 +120,119 @@ input{
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem("clientes")) || [];
-let indexActual = null;
 
-// Renderiza la tabla
-function render(){
-  let tabla = document.getElementById("tabla");
-  tabla.innerHTML = "";
-  data.forEach((c,i)=>{
-    tabla.innerHTML += `
-    <tr onclick="seleccionar(${i})">
-      <td>${c.dpiCliente}</td>
-      <td>${c.nombre}</td>
-      <td>${c.apellido}</td>
-      <td>${c.direccion}</td>
-      <td>${c.estado}</td>
-    </tr>`;
-  });
-}
+    let indexActual = null;
 
-// Guarda en localStorage
-function guardar(){
-  localStorage.setItem("clientes", JSON.stringify(data));
-}
+    // LISTAR
+    async function render(){
+      let res = await fetch("/api/clientes");
+      let data = await res.json();
 
-// Limpia los inputs
-function limpiarFormulario(){
-  document.getElementById("dpiCliente").value = "";
-  document.getElementById("nombre").value = "";
-  document.getElementById("apellido").value = "";
-  document.getElementById("direccion").value = "";
-  document.getElementById("estado").value = "";
-  indexActual = null;
-}
+      let tabla = document.getElementById("tabla");
+      tabla.innerHTML = "";
 
-// AGREGAR
-function agregar(){
-  let dpiCliente = document.getElementById("dpiCliente").value;
-  let nombre = document.getElementById("nombre").value;
-  let apellido = document.getElementById("apellido").value;
-  let direccion = document.getElementById("direccion").value;
-  let estado = document.getElementById("estado").value;
+      data.forEach((c)=>{
+        tabla.innerHTML += `
+        <tr onclick="seleccionar(${c.dpiCliente}, '${c.nombreCliente}', '${c.apellidoCliente}', '${c.direccion}', '${c.estado}')">
+          <td>${c.dpiCliente}</td>
+          <td>${c.nombreCliente}</td>
+          <td>${c.apellidoCliente}</td>
+          <td>${c.direccion}</td>
+          <td>${c.estado}</td>
+        </tr>`;
+      });
+    }
 
-  if(dpiCliente && nombre && apellido && direccion && estado){
-    data.push({dpiCliente, nombre, apellido, direccion, estado});
-    guardar();
-    render();
-    limpiarFormulario();
-  } else {
-    alert("Completa todos los campos");
-  }
-}
+    // SELECCIONAR
+    function seleccionar(dpi, nombreCliente, apellidoCliente, direccion, estado){
+      indexActual = dpi;
 
-// SELECCIONAR
-function seleccionar(i){
-  indexActual = i;
-  let c = data[i];
-  document.getElementById("dpiCliente").value = c.dpiCliente;
-  document.getElementById("nombre").value = c.nombre;
-  document.getElementById("apellido").value = c.apellido;
-  document.getElementById("direccion").value = c.direccion;
-  document.getElementById("estado").value = c.estado;
-}
+      document.getElementById("dpiCliente").value = dpi;
+      document.getElementById("nombre").value = nombreCliente;
+      document.getElementById("apellido").value = apellidoCliente;
+      document.getElementById("direccion").value = direccion;
+      document.getElementById("estado").value = estado;
+    }
 
-// EDITAR
-function editar(){
-  if(indexActual !== null){
-    let dpiCliente = document.getElementById("dpiCliente").value;
-    let nombre = document.getElementById("nombre").value;
-    let apellido = document.getElementById("apellido").value;
-    let direccion = document.getElementById("direccion").value;
-    let estado = document.getElementById("estado").value;
+    // LIMPIAR
+    function limpiarFormulario(){
+      document.getElementById("dpiCliente").value = "";
+      document.getElementById("nombre").value = "";
+      document.getElementById("apellido").value = "";
+      document.getElementById("direccion").value = "";
+      document.getElementById("estado").value = "";
+      indexActual = null;
+    }
 
-    if(dpiCliente && nombre && apellido && direccion && estado){
-      data[indexActual] = {dpiCliente, nombre, apellido, direccion, estado};
-      guardar();
+    // AGREGAR
+    async function agregar(){
+      let cliente = {
+        dpiCliente: document.getElementById("dpiCliente").value,
+        nombreCliente: document.getElementById("nombre").value,
+        apellidoCliente: document.getElementById("apellido").value,
+        direccion: document.getElementById("direccion").value,
+        estado: document.getElementById("estado").value
+      };
+
+      await fetch("/api/clientes", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(cliente)
+      });
+
       render();
       limpiarFormulario();
-    } else {
-      alert("Completa todos los campos");
     }
-  } else {
-    alert("Selecciona un cliente haciendo clic en la tabla");
-  }
-}
 
-// ELIMINAR
-function eliminar(){
-  if(indexActual !== null){
-    data.splice(indexActual, 1);
-    guardar();
+    // EDITAR
+    async function editar(){
+      if(indexActual == null){
+        alert("Selecciona un cliente");
+        return;
+      }
+
+      let cliente = {
+        dpiCliente: indexActual,
+        nombreCliente: document.getElementById("nombre").value,
+        apellidoCliente: document.getElementById("apellido").value,
+        direccion: document.getElementById("direccion").value,
+        estado: document.getElementById("estado").value
+      };
+
+      await fetch(`/api/clientes/${indexActual}`, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(cliente)
+      });
+
+      render();
+      limpiarFormulario();
+    }
+
+    // ELIMINAR
+    async function eliminar(){
+      if(indexActual == null){
+        alert("Selecciona un cliente");
+        return;
+      }
+
+      await fetch(`/api/clientes/${indexActual}`, {
+        method: "DELETE"
+      });
+
+      render();
+      limpiarFormulario();
+    }
+
+    // ACTUALIZAR
+    function actualizar(){
+      limpiarFormulario();
+      render();
+    }
+
+    // INICIAL
     render();
-    limpiarFormulario();
-  } else {
-    alert("Selecciona un cliente haciendo clic en la tabla");
-  }
-}
 
-// ACTUALIZAR
-function actualizar(){
-  render();
-  limpiarFormulario();
-}
-
-// Inicializa la tabla
-render();
 </script>
-
 </body>
 </html>
