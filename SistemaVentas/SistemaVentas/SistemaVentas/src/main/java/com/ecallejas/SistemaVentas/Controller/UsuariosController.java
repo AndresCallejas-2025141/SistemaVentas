@@ -2,52 +2,79 @@ package com.ecallejas.SistemaVentas.Controller;
 
 import com.ecallejas.SistemaVentas.Entity.Usuarios;
 import com.ecallejas.SistemaVentas.Service.UsuariosService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/usuarios")
+@Controller
 public class UsuariosController {
 
-    private final UsuariosService usuariosService;
+    @Autowired
+    private UsuariosService service;
 
-    public UsuariosController(UsuariosService usuariosService) {
-        this.usuariosService = usuariosService;
+    // LOGIN
+    @GetMapping("/usuario")
+    public String login() {
+        return "login";
     }
 
-    @GetMapping
-    public List<Usuarios> getAllUsuarios() {
-        return usuariosService.getAllUsuarios();
-    }
+    @PostMapping("/login")
+    public String validar(@RequestParam String username,
+                          @RequestParam String password,
+                          Model model) {
 
-    @GetMapping("/{codigoUsuario}")
-    public ResponseEntity<Usuarios> getUsuariosById(@PathVariable Integer codigoUsuario) {
-        Usuarios usuario = usuariosService.getUsuariosById(codigoUsuario);
-        if (usuario != null) {
-            return ResponseEntity.ok(usuario);
+        Usuarios u = service.login(username, password);
+
+        if (u != null) {
+            return "redirect:/home";
         } else {
-            return ResponseEntity.notFound().build();
+            model.addAttribute("error", "Credenciales incorrectas");
+            return "login";
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Usuarios> createUsuarios(@RequestBody Usuarios usuarios) {
-        Usuarios created = usuariosService.saveUsuarios(usuarios);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    // REGISTRO
+    @GetMapping("/registro")
+    public String registro() {
+        return "crearcuenta";
     }
 
-    @PutMapping("/{codigoUsuario}")
-    public ResponseEntity<Usuarios> updateUsuarios(@PathVariable Integer codigoUsuario, @RequestBody Usuarios usuarios) {
-        Usuarios updated = usuariosService.updateUsuarios(codigoUsuario, usuarios);
-        return ResponseEntity.ok(updated);
+    @PostMapping("/registro")
+    public String guardar(@RequestParam String username,
+                          @RequestParam String password,
+                          Model model) {
+
+        Usuarios u = service.registrar(username, password);
+
+        if (u == null) {
+            model.addAttribute("error", "El usuario ya existe");
+            return "crearcuenta";
+        }
+
+        return "redirect:/usuario";
     }
 
-    @DeleteMapping("/{codigoUsuario}")
-    public ResponseEntity<String> deleteUsuarios(@PathVariable Integer codigoUsuario) {
-        usuariosService.deleteUsuarios(codigoUsuario);
-        return ResponseEntity.ok("Usuario eliminado con éxito");
+    // LISTA
+    @GetMapping("/listausuarios")
+    public String listar(Model model) {
+        List<Usuarios> lista = service.listar();
+        model.addAttribute("usuarios", lista);
+        return "usuarios";
+    }
+
+    // ELIMINAR
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id) {
+        service.eliminar(id);
+        return "redirect:/usuarios";
+    }
+
+    // HOME
+    @GetMapping("/home")
+    public String home() {
+        return "home";
     }
 }
