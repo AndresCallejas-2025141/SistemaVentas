@@ -122,117 +122,134 @@ input{
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem("usuarios")) || [];
-let indexActual = null;
 
-// Renderiza la tabla
-function render(){
-  let tabla = document.getElementById("tabla");
-  tabla.innerHTML = "";
-  data.forEach((u,i)=>{
-    tabla.innerHTML += `
-    <tr onclick="seleccionar(${i})">
-      <td>${u.codigoUsuario}</td>
-      <td>${u.username}</td>
-      <td>${u.password}</td>
-      <td>${u.email}</td>
-      <td>${u.role}</td>
-      <td>${u.estado}</td>
-    </tr>`;
-  });
-}
+    let indexActual = null;
 
-// Guarda en localStorage
-function guardar(){
-  localStorage.setItem("usuarios", JSON.stringify(data));
-}
+    // LISTAR
+    async function render(){
+      let res = await fetch("/api/usuarios");
+      let data = await res.json();
 
-// Limpia los inputs
-function limpiarFormulario(){
-  document.getElementById("codigoUsuario").value = "";
-  document.getElementById("username").value = "";
-  document.getElementById("password").value = "";
-  document.getElementById("email").value = "";
-  document.getElementById("role").value = "";
-  document.getElementById("estado").value = "";
-  indexActual = null;
-}
+      let tabla = document.getElementById("tabla");
+      tabla.innerHTML = "";
 
-// AGREGAR
-function agregar(){
-  let codigoUsuario = document.getElementById("codigoUsuario").value;
-  let username = document.getElementById("username").value;
-  let password = document.getElementById("password").value;
-  let email = document.getElementById("email").value;
-  let role = document.getElementById("role").value;
-  let estado = document.getElementById("estado").value;
+      data.forEach((u)=>{
 
-  if(codigoUsuario && username && password && email && role && estado){
-    data.push({codigoUsuario, username, password, email, role, estado});
-    guardar();
-    render();
-    limpiarFormulario();
-  } else {
-    alert("Completa todos los campos");
-  }
-}
+        tabla.innerHTML += `
+        <tr onclick="seleccionar(
+          ${u.codigoUsuario},
+          '${u.username}',
+          '${u.password}',
+          '${u.email}',
+          '${u.role}',
+          '${u.estado}'
+        )">
+          <td>${u.codigoUsuario}</td>
+          <td>${u.username}</td>
+          <td>${u.password}</td>
+          <td>${u.email}</td>
+          <td>${u.role}</td>
+          <td>${u.estado}</td>
+        </tr>`;
+      });
+    }
 
-// SELECCIONAR
-function seleccionar(i){
-  indexActual = i;
-  let u = data[i];
-  document.getElementById("codigoUsuario").value = u.codigoUsuario;
-  document.getElementById("username").value = u.username;
-  document.getElementById("password").value = u.password;
-  document.getElementById("email").value = u.email;
-  document.getElementById("role").value = u.role;
-  document.getElementById("estado").value = u.estado;
-}
+    // SELECCIONAR
+    function seleccionar(codigoUsuario, username, password, email, role, estado){
 
-// EDITAR
-function editar(){
-  if(indexActual !== null){
-    let codigoUsuario = document.getElementById("codigoUsuario").value;
-    let username = document.getElementById("username").value;
-    let password = document.getElementById("password").value;
-    let email = document.getElementById("email").value;
-    let role = document.getElementById("role").value;
-    let estado = document.getElementById("estado").value;
+      indexActual = codigoUsuario;
 
-    if(codigoUsuario && username && password && email && role && estado){
-      data[indexActual] = {codigoUsuario, username, password, email, role, estado};
-      guardar();
+      document.getElementById("codigoUsuario").value = codigoUsuario;
+      document.getElementById("username").value = username;
+      document.getElementById("password").value = password;
+      document.getElementById("email").value = email;
+      document.getElementById("role").value = role;
+      document.getElementById("estado").value = estado;
+    }
+
+    // LIMPIAR
+    function limpiarFormulario(){
+      document.getElementById("codigoUsuario").value = "";
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("role").value = "";
+      document.getElementById("estado").value = "";
+      indexActual = null;
+    }
+
+    // AGREGAR
+    async function agregar(){
+
+      let usuario = {
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value,
+        email: document.getElementById("email").value,
+        role: document.getElementById("role").value,
+        estado: document.getElementById("estado").value
+      };
+
+      await fetch("/api/usuarios", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(usuario)
+      });
+
       render();
       limpiarFormulario();
-    } else {
-      alert("Completa todos los campos");
     }
-  } else {
-    alert("Selecciona un usuario haciendo clic en la tabla");
-  }
-}
 
-// ELIMINAR
-function eliminar(){
-  if(indexActual !== null){
-    data.splice(indexActual, 1);
-    guardar();
+    // EDITAR
+    async function editar(){
+
+      if(indexActual == null){
+        alert("Selecciona un usuario");
+        return;
+      }
+
+      let usuario = {
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value,
+        email: document.getElementById("email").value,
+        role: document.getElementById("role").value,
+        estado: document.getElementById("estado").value
+      };
+
+      await fetch(`/api/usuarios/${indexActual}`, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(usuario)
+      });
+
+      render();
+      limpiarFormulario();
+    }
+
+    // ELIMINAR
+    async function eliminar(){
+
+      if(indexActual == null){
+        alert("Selecciona un usuario");
+        return;
+      }
+
+      await fetch(`/api/usuarios/${indexActual}`, {
+        method: "DELETE"
+      });
+
+      render();
+      limpiarFormulario();
+    }
+
+    // ACTUALIZAR
+    function actualizar(){
+      render();
+      limpiarFormulario();
+    }
+
+    // INICIAL
     render();
-    limpiarFormulario();
-  } else {
-    alert("Selecciona un usuario haciendo clic en la tabla");
-  }
-}
 
-// ACTUALIZAR
-function actualizar(){
-  render();
-  limpiarFormulario();
-}
-
-// Inicializa la tabla
-render();
 </script>
-
 </body>
 </html>
