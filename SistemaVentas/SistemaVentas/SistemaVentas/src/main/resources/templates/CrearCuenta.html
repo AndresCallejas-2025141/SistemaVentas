@@ -1,185 +1,167 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SistemaVentas — Crear Cuenta</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SistemaVentas — Crear Cuenta</title>
 
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg: #f4f6f9;
-      --card: #ffffff;
-      --primary: #10b981;
-      --primary-dark: #059669;
-      --text: #1f2937;
-      --text-light: #6b7280;
-      --border: #e5e7eb;
-    }
+        :root {
+          --bg: #f4f6f9;
+          --card: #ffffff;
+          --primary: #10b981;
+          --primary-dark: #059669;
+          --text: #1f2937;
+          --text-light: #6b7280;
+          --border: #e5e7eb;
+        }
 
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--bg);
-      height: 100vh;
-      display: flex;
-    }
+        body {
+          font-family: 'Poppins', sans-serif;
+          background: var(--bg);
+          height: 100vh;
+          display: flex;
+        }
 
-    .container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      width: 100%;
-    }
+        .container {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          width: 100%;
+        }
 
-    .left {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 60px;
-    }
+        .left {
+          background: linear-gradient(135deg, #10b981, #059669);
+          color: white;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding: 60px;
+        }
 
-    .title {
-      font-size: 36px;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
+        .title {
+          font-size: 36px;
+          font-weight: 700;
+          margin-bottom: 20px;
+        }
 
-    .desc {
-      font-size: 14px;
-      opacity: 0.9;
-      max-width: 400px;
-    }
+        .desc {
+          font-size: 14px;
+          opacity: 0.9;
+          max-width: 400px;
+        }
 
-    .right {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+        .right {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
 
-    .card {
-      background: var(--card);
-      padding: 40px;
-      border-radius: 16px;
-      width: 100%;
-      max-width: 380px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    }
+        .card {
+          background: var(--card);
+          padding: 40px;
+          border-radius: 16px;
+          width: 100%;
+          max-width: 380px;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
 
-    .card h2 {
-      margin-bottom: 10px;
-      color: var(--text);
-    }
+        .card h2 {
+          margin-bottom: 10px;
+          color: var(--text);
+        }
 
-    .field {
-      margin-bottom: 18px;
-    }
+        .field {
+          margin-bottom: 18px;
+        }
 
-    .field label {
-      font-size: 12px;
-      color: var(--text-light);
-      display: block;
-      margin-bottom: 6px;
-    }
+        .field label {
+          font-size: 12px;
+          color: var(--text-light);
+          display: block;
+          margin-bottom: 6px;
+        }
 
-    .field input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      font-size: 14px;
-    }
+        .field input {
+          width: 100%;
+          padding: 12px;
+          border-radius: 8px;
+          border: 1px solid var(--border);
+          font-size: 14px;
+        }
 
-    .field input:focus {
-      border-color: var(--primary);
-    }
+        .field input:focus {
+          outline: none;
+          border-color: var(--primary);
+        }
 
-    .btn {
-      width: 100%;
-      padding: 13px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 10px;
-    }
+        .btn {
+          width: 100%;
+          padding: 13px;
+          background: var(--primary);
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          margin-top: 10px;
+        }
 
-    .btn:hover {
-      background: var(--primary-dark);
-    }
+        .btn:hover {
+          background: var(--primary-dark);
+        }
 
-    .forgot {
-      font-size: 12px;
-      text-align: right;
-      display: block;
-      margin-top: 10px;
-      color: var(--primary);
-      text-decoration: none;
-    }
-
-    .roles {
-      margin-top: 25px;
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-light);
-    }
-
-    @media (max-width: 800px) {
-      .container {
-        grid-template-columns: 1fr;
-      }
-      .left {
-        display: none;
-      }
-    }
-  </style>
+        .roles {
+          margin-top: 25px;
+          text-align: center;
+          font-size: 12px;
+          color: var(--text-light);
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="container">
 
-  <!-- LEFT -->
-  <div class="left">
-    <div class="title">SistemaVentas</div>
-    <div class="desc">Regístrate y crea un nuevo usuario</div>
-  </div>
-
-  <!-- RIGHT -->
-  <div class="right">
-    <div class="card">
-      <h2>Crear Cuenta</h2>
-
-      <!-- FORMULARIO THYMELEAF -->
-      <form th:action="@{/registro}" th:object="${usuario}" method="post">
-
-        <div class="field">
-          <label>Usuario</label>
-          <input type="text" th:field="*{username}" placeholder="Elige un nombre de usuario">
-        </div>
-
-        <div class="field">
-          <label>Contraseña</label>
-          <input type="password" th:field="*{password}" placeholder="Crea tu contraseña">
-        </div>
-
-        <button type="submit" class="btn">
-          Crear Cuenta
-        </button>
-
-      </form>
-
-      <a th:href="@{/login}" class="forgot">Ya tengo cuenta</a>
-
-      <div class="roles">
-        Administrador · Vendedor
-      </div>
-
+    <!-- LEFT -->
+    <div class="left">
+        <div class="title">SistemaVentas</div>
+        <div class="desc">Regístrate y crea un nuevo usuario</div>
     </div>
-  </div>
+
+    <!-- RIGHT -->
+    <div class="right">
+        <div class="card">
+            <h2>Crear Cuenta</h2>
+
+            <!-- FORMULARIO -->
+            <form th:action="@{/registro}" method="post">
+
+                <div class="field">
+                    <label>Usuario</label>
+                    <input type="text" name="username" placeholder="Elige un nombre de usuario" required>
+                </div>
+
+                <div class="field">
+                    <label>Contraseña</label>
+                    <input type="password" name="password" placeholder="Crea tu contraseña" required>
+                </div>
+
+                <button type="submit" class="btn">
+                    Crear Cuenta
+                </button>
+
+            </form>
+
+            <!-- LINK VOLVER AL LOGIN -->
+            <div class="roles">
+                <a th:href="@{/usuario}">¿Ya tienes cuenta? Inicia sesión</a>
+            </div>
+
+        </div>
+    </div>
 
 </div>
 
