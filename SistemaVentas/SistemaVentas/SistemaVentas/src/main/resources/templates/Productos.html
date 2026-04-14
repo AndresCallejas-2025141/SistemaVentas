@@ -120,112 +120,128 @@ input{
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem("productos")) || [];
-let indexActual = null;
 
-// Renderiza la tabla
-function render(){
-  let tabla = document.getElementById("tabla");
-  tabla.innerHTML = "";
-  data.forEach((p,i)=>{
-    tabla.innerHTML += `
-    <tr onclick="seleccionar(${i})">
-      <td>${p.codigoProducto}</td>
-      <td>${p.nombreProducto}</td>
-      <td>${p.precio}</td>
-      <td>${p.stock}</td>
-      <td>${p.estado}</td>
-    </tr>`;
-  });
-}
+    let indexActual = null;
 
-// Guarda en localStorage
-function guardar(){
-  localStorage.setItem("productos", JSON.stringify(data));
-}
+    // LISTAR
+    async function render(){
+      let res = await fetch("/api/productos");
+      let data = await res.json();
 
-// Limpia los inputs
-function limpiarFormulario(){
-  document.getElementById("codigoProducto").value = "";
-  document.getElementById("nombreProducto").value = "";
-  document.getElementById("precio").value = "";
-  document.getElementById("stock").value = "";
-  document.getElementById("estado").value = "";
-  indexActual = null;
-}
+      let tabla = document.getElementById("tabla");
+      tabla.innerHTML = "";
 
-// AGREGAR
-function agregar(){
-  let codigoProducto = document.getElementById("codigoProducto").value;
-  let nombreProducto = document.getElementById("nombreProducto").value;
-  let precio = document.getElementById("precio").value;
-  let stock = document.getElementById("stock").value;
-  let estado = document.getElementById("estado").value;
+      data.forEach((p)=>{
 
-  if(codigoProducto && nombreProducto && precio && stock && estado){
-    data.push({codigoProducto, nombreProducto, precio, stock, estado});
-    guardar(); 
-    render();
-    limpiarFormulario();
-  } else {
-    alert("Completa todos los campos");
-  }
-}
+        tabla.innerHTML += `
+        <tr onclick="seleccionar(
+          ${p.codigoProducto},
+          '${p.nombreProducto}',
+          ${p.precio},
+          ${p.stock},
+          '${p.estado}'
+        )">
+          <td>${p.codigoProducto}</td>
+          <td>${p.nombreProducto}</td>
+          <td>${p.precio}</td>
+          <td>${p.stock}</td>
+          <td>${p.estado}</td>
+        </tr>`;
+      });
+    }
 
-// SELECCIONAR
-function seleccionar(i){
-  indexActual = i;
-  let p = data[i];
-  document.getElementById("codigoProducto").value = p.codigoProducto;
-  document.getElementById("nombreProducto").value = p.nombreProducto;
-  document.getElementById("precio").value = p.precio;
-  document.getElementById("stock").value = p.stock;
-  document.getElementById("estado").value = p.estado;
-}
+    // SELECCIONAR
+    function seleccionar(codigoProducto, nombreProducto, precio, stock, estado){
 
-// EDITAR
-function editar(){
-  if(indexActual !== null){
-    let codigoProducto = document.getElementById("codigoProducto").value;
-    let nombreProducto = document.getElementById("nombreProducto").value;
-    let precio = document.getElementById("precio").value;
-    let stock = document.getElementById("stock").value;
-    let estado = document.getElementById("estado").value;
+      indexActual = codigoProducto;
 
-    if(codigoProducto && nombreProducto && precio && stock && estado){
-      data[indexActual] = {codigoProducto, nombreProducto, precio, stock, estado};
-      guardar();
+      document.getElementById("codigoProducto").value = codigoProducto;
+      document.getElementById("nombreProducto").value = nombreProducto;
+      document.getElementById("precio").value = precio;
+      document.getElementById("stock").value = stock;
+      document.getElementById("estado").value = estado;
+    }
+
+    // LIMPIAR
+    function limpiarFormulario(){
+      document.getElementById("codigoProducto").value = "";
+      document.getElementById("nombreProducto").value = "";
+      document.getElementById("precio").value = "";
+      document.getElementById("stock").value = "";
+      document.getElementById("estado").value = "";
+      indexActual = null;
+    }
+
+    // AGREGAR
+    async function agregar(){
+
+      let producto = {
+        nombreProducto: document.getElementById("nombreProducto").value,
+        precio: document.getElementById("precio").value,
+        stock: document.getElementById("stock").value,
+        estado: document.getElementById("estado").value
+      };
+
+      await fetch("/api/productos", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(producto)
+      });
+
       render();
       limpiarFormulario();
-    } else {
-      alert("Completa todos los campos");
     }
-  } else {
-    alert("Selecciona un producto haciendo clic en la tabla");
-  }
-}
 
-// ELIMINAR
-function eliminar(){
-  if(indexActual !== null){
-    data.splice(indexActual, 1);
-    guardar();
+    // EDITAR
+    async function editar(){
+
+      if(indexActual == null){
+        alert("Selecciona un producto");
+        return;
+      }
+
+      let producto = {
+        nombreProducto: document.getElementById("nombreProducto").value,
+        precio: document.getElementById("precio").value,
+        stock: document.getElementById("stock").value,
+        estado: document.getElementById("estado").value
+      };
+
+      await fetch(`/api/productos/${indexActual}`, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(producto)
+      });
+
+      render();
+      limpiarFormulario();
+    }
+
+    // ELIMINAR
+    async function eliminar(){
+
+      if(indexActual == null){
+        alert("Selecciona un producto");
+        return;
+      }
+
+      await fetch(`/api/productos/${indexActual}`, {
+        method: "DELETE"
+      });
+
+      render();
+      limpiarFormulario();
+    }
+
+    // ACTUALIZAR
+    function actualizar(){
+      render();
+      limpiarFormulario();
+    }
+
+    // INICIAL
     render();
-    limpiarFormulario();
-  } else {
-    alert("Selecciona un producto haciendo clic en la tabla");
-  }
-}
 
-// ACTUALIZAR
-function actualizar(){
-  render();
-  limpiarFormulario();
-}
-
-// Inicializa la tabla
-render();
 </script>
-
 </body>
 </html>
