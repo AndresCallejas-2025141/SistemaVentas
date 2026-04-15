@@ -6,65 +6,129 @@
     <title>SistemaVentas — Iniciar Sesión</title>
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         :root {
-            --bg: #f4f6f9;
-            --card: #ffffff;
+            --bg: #0f172a;
+            --card: rgba(255, 255, 255, 0.08);
+            --glass: rgba(255, 255, 255, 0.12);
             --primary: #10b981;
             --primary-dark: #059669;
-            --text: #1f2937;
-            --text-light: #6b7280;
-            --border: #e5e7eb;
+            --text: #f8fafc;
+            --text-light: #94a3b8;
+            --border: rgba(255,255,255,0.15);
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: var(--bg);
+            background: radial-gradient(circle at top, #1e293b, #0f172a);
             height: 100vh;
             display: flex;
+            overflow: hidden;
         }
 
+        /* CONTENEDOR PRINCIPAL */
         .container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1.2fr 1fr;
             width: 100%;
+            height: 100vh;
         }
 
+        /* PANEL IZQUIERDO (LOGO) */
         .left {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
+            position: relative;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 60px;
+            padding: 80px;
+            color: white;
+            animation: fadeLeft 1s ease forwards;
         }
 
+        /* LOGO BOX MEJORADO */
+        .logo-box {
+            width: 110px;
+            height: 110px;
+            border-radius: 24px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 30px;
+
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+
+            overflow: hidden;
+
+            animation: logoIn 0.8s ease forwards;
+        }
+
+        /* LOGO IMG */
+        .logo-png {
+            width: 75%;
+            height: 75%;
+            object-fit: contain;
+
+            filter: drop-shadow(0 8px 10px rgba(0,0,0,0.4));
+
+            transition: all 0.4s ease;
+        }
+
+        .logo-box:hover .logo-png {
+            transform: scale(1.08) rotate(-2deg);
+        }
+
+        /* TITULO */
         .title {
-            font-size: 36px;
-            font-weight: 700;
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
+        .subtitle {
+            margin-top: 10px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* PANEL DERECHO */
         .right {
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
+        /* CARD LOGIN */
         .card {
             background: var(--card);
-            padding: 40px;
-            border-radius: 16px;
+            backdrop-filter: blur(18px);
+            border: 1px solid var(--border);
+            padding: 45px;
+            border-radius: 18px;
             width: 100%;
-            max-width: 380px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            animation: fadeUp 0.9s ease forwards;
         }
 
         .card h2 {
-            margin-bottom: 12px;
-            color: var(--text);
+            margin-bottom: 18px;
+            color: white;
         }
 
+        /* CAMPOS */
         .field {
             margin-bottom: 18px;
         }
@@ -78,44 +142,43 @@
 
         .field input {
             width: 100%;
-            padding: 12px;
-            border-radius: 8px;
+            padding: 12px 14px;
+            border-radius: 10px;
             border: 1px solid var(--border);
-            font-size: 14px;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            transition: 0.3s ease;
         }
 
         .field input:focus {
             outline: none;
             border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.2);
+            transform: translateY(-2px);
         }
 
-        .link {
-            font-size: 12px;
-            text-align: right;
-            display: block;
-            margin-top: 6px;
-            color: var(--primary);
-            text-decoration: none;
-        }
-
+        /* BOTÓN */
         .btn {
             width: 100%;
             padding: 13px;
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             margin-top: 10px;
+            transition: all 0.3s ease;
         }
 
         .btn:hover {
-            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(16,185,129,0.4);
         }
 
+        /* LINKS */
         .roles {
-            margin-top: 25px;
+            margin-top: 22px;
             text-align: center;
             font-size: 12px;
             color: var(--text-light);
@@ -127,16 +190,53 @@
             font-weight: 600;
         }
 
+        /* ERROR */
         .error {
-            color: red;
+            color: #f87171;
             font-size: 12px;
             margin-bottom: 12px;
         }
 
+        /* ANIMACIONES */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes logoIn {
+            from {
+                opacity: 0;
+                transform: scale(0.7);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* RESPONSIVE */
         @media (max-width: 800px) {
             .container {
                 grid-template-columns: 1fr;
             }
+
             .left {
                 display: none;
             }
@@ -150,7 +250,15 @@
 
     <!-- PANEL IZQUIERDO -->
     <div class="left">
+
+        <!-- LOGO -->
+        <div class="logo-box">
+            <img th:src="@{/img/logo.png}" alt="Logo" class="logo-png">
+        </div>
+
         <div class="title">SistemaVentas</div>
+        <div class="subtitle">Gestión moderna de ventas y usuarios</div>
+
     </div>
 
     <!-- LOGIN -->
@@ -159,10 +267,8 @@
 
             <h2>Iniciar sesión</h2>
 
-            <!-- Mensaje de error -->
             <div th:if="${error}" class="error" th:text="${error}"></div>
 
-            <!-- FORMULARIO LOGIN -->
             <form th:action="@{/login}" method="post">
 
                 <div class="field">
@@ -175,13 +281,10 @@
                     <input type="password" name="password" required>
                 </div>
 
-                <button class="btn" type="submit">
-                    Entrar
-                </button>
+                <button class="btn" type="submit">Entrar</button>
 
             </form>
 
-            <!-- CREAR CUENTA -->
             <div class="roles">
                 <a th:href="@{/registro}">Crear Cuenta</a>
             </div>
