@@ -36,9 +36,34 @@
           z-index:10;
         }
 
-        .top-bar h2{
-          font-size:16px;
-          font-weight:600;
+        .left-info{
+          display:flex;
+          flex-direction:column;
+          gap:4px;
+        }
+
+        .user-info{
+          font-size:20px;
+        }
+
+        .role{
+          font-size:15px;
+          opacity:0.9;
+        }
+
+        .user-photo{
+          width:50px;
+          height:50px;
+          border-radius:45%;
+          object-fit:cover;
+          margin-left:10px;
+          border:2px solid #fff;
+        }
+
+        .right-actions{
+          display:flex;
+          align-items:center;
+          gap:15px;
         }
 
         .logout{
@@ -50,6 +75,7 @@
           cursor:pointer;
           font-weight:600;
           font-size:13px;
+          text-decoration:none;
         }
 
         .logout:hover{
@@ -58,7 +84,7 @@
 
         /* HEADER */
         .header{
-          padding:100px 25px 25px;
+          padding:120px 25px 25px;
           text-align:center;
         }
 
@@ -66,12 +92,6 @@
           color:var(--text);
         }
 
-        .header p{
-          color:var(--text-light);
-          font-size:14px;
-        }
-
-        /* GRID */
         .grid{
           display:grid;
           grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
@@ -79,7 +99,6 @@
           padding:30px;
         }
 
-        /* CARD */
         .card{
           position:relative;
           border-radius:20px;
@@ -102,7 +121,6 @@
           object-fit:cover;
         }
 
-        /* OVERLAY */
         .overlay{
           position:absolute;
           inset:0;
@@ -117,7 +135,6 @@
           font-size:18px;
         }
 
-        /* RESPONSIVE */
         @media(max-width:600px){
           .card{height:150px;}
         }
@@ -126,51 +143,68 @@
 
 <body>
 
-<!-- FRANJA SUPERIOR -->
+<!-- TOP BAR -->
 <div class="top-bar">
-    <h2>SistemaVentas</h2>
-    <h1>Selecciona una vista</h1>
-    <a th:href="@{/login}" class="logout">Cerrar sesión</a>
+
+    <!-- IZQUIERDA -->
+    <div class="left-info">
+        <div class="user-info">
+            Bienvenido,
+            <strong th:text="${session.usuarioLogueado}">Usuario</strong>
+        </div>
+
+        <div class="role">
+            Rol: <span th:text="${session.rol}">ROL</span>
+        </div>
+    </div>
+
+    <!-- DERECHA -->
+    <div class="right-actions">
+
+        <!-- FOTO SEGÚN ROL -->
+        <img th:if="${session.rol == 'administrador'}"
+             th:src="@{/img/admin.jpg}"
+             class="user-photo">
+
+        <img th:if="${session.rol == 'cliente'}"
+             th:src="@{/img/cliente.png}"
+             class="user-photo">
+
+
+        <!-- LOGOUT REAL -->
+        <a th:href="@{/login}" class="logout">Cerrar sesión</a>
+
+    </div>
+
 </div>
 
-<div class="header">
-</div>
+<div class="header"></div>
 
 <div class="grid">
 
     <a th:href="@{/ventas}" class="card">
-        <img src="https://th.bing.com/th/id/R.0ff67b2000b31398a199151cbd186f0d?rik=Vum4kUA8IZQejw&pid=ImgRaw&r=0" alt="Ventas">
-        <div class="overlay">
-            <h3>Ventas</h3>
-        </div>
+        <img src="https://th.bing.com/th/id/R.0ff67b2000b31398a199151cbd186f0d?rik=Vum4kUA8IZQejw&pid=ImgRaw&r=0">
+        <div class="overlay"><h3>Ventas</h3></div>
     </a>
 
     <a th:href="@{/detalleventas}" class="card">
-        <img src="https://cdn-icons-png.flaticon.com/512/14931/14931813.png" alt="Detalle de Ventas">
-        <div class="overlay">
-            <h3>Detalles de Ventas</h3>
-        </div>
+        <img src="https://cdn-icons-png.flaticon.com/512/14931/14931813.png">
+        <div class="overlay"><h3>Detalles de Ventas</h3></div>
     </a>
 
     <a th:href="@{/productos}" class="card">
-        <img src="https://www.dobleclic.com/wp-content/uploads/2011/04/logotipos.png" alt="Productos">
-        <div class="overlay">
-            <h3>Productos</h3>
-        </div>
+        <img src="https://www.dobleclic.com/wp-content/uploads/2011/04/logotipos.png">
+        <div class="overlay"><h3>Productos</h3></div>
     </a>
 
     <a th:href="@{/clientes}" class="card">
-        <img src="https://static.vecteezy.com/system/resources/previews/022/772/596/non_2x/business-people-icon-editable-eps-symbol-illustration-vector.jpg" alt="Clientes">
-        <div class="overlay">
-            <h3>Clientes</h3>
-        </div>
+        <img src="https://static.vecteezy.com/system/resources/previews/022/772/596/non_2x/business-people-icon-editable-eps-symbol-illustration-vector.jpg">
+        <div class="overlay"><h3>Clientes</h3></div>
     </a>
 
     <a th:href="@{/usuarios}" class="card">
-        <img src="https://tse3.mm.bing.net/th/id/OIP.w2McZSq-EYWxh02iSvC3xwHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Usuarios">
-        <div class="overlay">
-            <h3>Usuarios</h3>
-        </div>
+        <img src="https://tse3.mm.bing.net/th/id/OIP.w2McZSq-EYWxh02iSvC3xwHaHa">
+        <div class="overlay"><h3>Usuarios</h3></div>
     </a>
 
 </div>
