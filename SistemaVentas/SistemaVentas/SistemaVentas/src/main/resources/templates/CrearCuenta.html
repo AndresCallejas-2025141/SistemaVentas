@@ -6,118 +6,207 @@
     <title>SistemaVentas — Crear Cuenta</title>
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+       box-sizing: border-box;
+       margin: 0;
+       padding: 0;
+   }
 
-        :root {
-          --bg: #f4f6f9;
-          --card: #ffffff;
-          --primary: #10b981;
-          --primary-dark: #059669;
-          --text: #1f2937;
-          --text-light: #6b7280;
-          --border: #e5e7eb;
-        }
+   :root {
+       --bg: #0f172a;
+       --card: rgba(255,255,255,0.08);
+       --primary: #10b981;
+       --primary-dark: #059669;
+       --text: #f8fafc;
+       --text-light: #94a3b8;
+       --border: rgba(255,255,255,0.15);
+   }
 
-        body {
-          font-family: 'Poppins', sans-serif;
-          background: var(--bg);
-          height: 100vh;
-          display: flex;
-        }
+   body {
+       font-family: 'Poppins', sans-serif;
+       background: radial-gradient(circle at top, #1e293b, #0f172a);
+       color: var(--text);
+       height: 100vh;
+       display: flex;
+   }
 
-        .container {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          width: 100%;
-        }
+   /* CONTAINER */
+   .container {
+       display: grid;
+       grid-template-columns: 1.2fr 1fr;
+       width: 100%;
+       height: 100vh;
+   }
 
-        .left {
-          background: linear-gradient(135deg, #10b981, #059669);
-          color: white;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          padding: 60px;
-        }
+   /* LEFT PANEL */
+   .left {
+       display: flex;
+       flex-direction: column;
+       justify-content: center;
 
-        .title {
-          font-size: 36px;
-          font-weight: 700;
-          margin-bottom: 20px;
-        }
+       padding: 80px;
 
-        .desc {
-          font-size: 14px;
-          opacity: 0.9;
-          max-width: 400px;
-        }
+       background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(5,150,105,0.05));
+       backdrop-filter: blur(10px);
 
-        .right {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
+       animation: fadeLeft 0.8s ease;
+   }
 
-        .card {
-          background: var(--card);
-          padding: 40px;
-          border-radius: 16px;
-          width: 100%;
-          max-width: 380px;
-          box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-        }
+   .title {
+       font-size: 48px;
+       font-weight: 800;
 
-        .card h2 {
-          margin-bottom: 10px;
-          color: var(--text);
-        }
+       background: linear-gradient(90deg, #10b981, #34d399);
+       -webkit-background-clip: text;
+       -webkit-text-fill-color: transparent;
 
-        .field {
-          margin-bottom: 18px;
-        }
+       margin-bottom: 10px;
+   }
 
-        .field label {
-          font-size: 12px;
-          color: var(--text-light);
-          display: block;
-          margin-bottom: 6px;
-        }
+   .desc {
+       font-size: 14px;
+       color: var(--text-light);
+       max-width: 400px;
+   }
 
-        .field input {
-          width: 100%;
-          padding: 12px;
-          border-radius: 8px;
-          border: 1px solid var(--border);
-          font-size: 14px;
-        }
+   /* RIGHT PANEL */
+   .right {
+       display: flex;
+       justify-content: center;
+       align-items: center;
+   }
 
-        .field input:focus {
-          outline: none;
-          border-color: var(--primary);
-        }
+   /* CARD */
+   .card {
+       background: var(--card);
+       backdrop-filter: blur(18px);
 
-        .btn {
-          width: 100%;
-          padding: 13px;
-          background: var(--primary);
-          color: white;
-          border: none;
-          border-radius: 8px;
-          font-weight: 600;
-          cursor: pointer;
-          margin-top: 10px;
-        }
+       border: 1px solid var(--border);
 
-        .btn:hover {
-          background: var(--primary-dark);
-        }
+       padding: 45px;
+       border-radius: 18px;
 
-        .roles {
-          margin-top: 25px;
-          text-align: center;
-          font-size: 12px;
-          color: var(--text-light);
-        }
+       width: 100%;
+       max-width: 400px;
+
+       box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+
+       animation: fadeUp 0.8s ease;
+   }
+
+   .card h2 {
+       margin-bottom: 18px;
+       color: white;
+   }
+
+   /* FIELDS */
+   .field {
+       margin-bottom: 18px;
+   }
+
+   .field label {
+       font-size: 12px;
+       color: var(--text-light);
+       display: block;
+       margin-bottom: 6px;
+   }
+
+   .field input {
+       width: 100%;
+       padding: 12px 14px;
+
+       border-radius: 10px;
+       border: 1px solid var(--border);
+
+       background: rgba(255,255,255,0.05);
+       color: var(--text);
+
+       outline: none;
+
+       transition: all 0.3s ease;
+   }
+
+   .field input:focus {
+       border-color: var(--primary);
+       box-shadow: 0 0 0 3px rgba(16,185,129,0.2);
+       transform: translateY(-2px);
+   }
+
+   /* BUTTON */
+   .btn {
+       width: 100%;
+       padding: 13px;
+
+       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+       color: white;
+
+       border: none;
+       border-radius: 10px;
+
+       font-weight: 600;
+       cursor: pointer;
+
+       margin-top: 10px;
+
+       transition: all 0.3s ease;
+   }
+
+   .btn:hover {
+       transform: translateY(-3px);
+       box-shadow: 0 10px 25px rgba(16,185,129,0.4);
+   }
+
+   /* LINK */
+   .roles {
+       margin-top: 25px;
+       text-align: center;
+       font-size: 12px;
+       color: var(--text-light);
+   }
+
+   .roles a {
+       color: var(--primary);
+       text-decoration: none;
+       font-weight: 600;
+   }
+
+   .roles a:hover {
+       text-decoration: underline;
+   }
+
+   /* ANIMATIONS */
+   @keyframes fadeUp {
+       from {
+           opacity: 0;
+           transform: translateY(30px);
+       }
+       to {
+           opacity: 1;
+           transform: translateY(0);
+       }
+   }
+
+   @keyframes fadeLeft {
+       from {
+           opacity: 0;
+           transform: translateX(-40px);
+       }
+       to {
+           opacity: 1;
+           transform: translateX(0);
+       }
+   }
+
+   /* RESPONSIVE */
+   @media (max-width: 800px) {
+       .container {
+           grid-template-columns: 1fr;
+       }
+
+       .left {
+           display: none;
+       }
+   }
     </style>
 </head>
 
