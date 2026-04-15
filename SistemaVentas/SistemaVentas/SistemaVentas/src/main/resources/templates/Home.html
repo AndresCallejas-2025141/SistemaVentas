@@ -197,12 +197,12 @@
         <div class="overlay"><h3>Productos</h3></div>
     </a>
 
-    <a th:href="@{/clientes}" class="card">
+    <a th:href="@{/clientes}" class="card" th:if="${session.rol == 'administrador'}">
         <img src="https://static.vecteezy.com/system/resources/previews/022/772/596/non_2x/business-people-icon-editable-eps-symbol-illustration-vector.jpg">
         <div class="overlay"><h3>Clientes</h3></div>
     </a>
 
-    <a th:href="@{/usuarios}" class="card">
+    <a th:href="@{/usuarios}" class="card" th:if="${session.rol == 'administrador'}">
         <img src="https://tse3.mm.bing.net/th/id/OIP.w2McZSq-EYWxh02iSvC3xwHaHa">
         <div class="overlay"><h3>Usuarios</h3></div>
     </a>
