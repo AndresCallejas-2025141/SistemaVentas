@@ -6,11 +6,13 @@ import java.util.List;
 
 public interface UsuariosService {
 
+    // LOGIN Y REGISTRO
     Usuarios registrar(String username, String password);
-
     Usuarios login(String username, String password);
 
+    // CRUD
     List<Usuarios> listar();
-
-    void eliminar(Integer id);
+    Usuarios obtenerPorId(Integer codigoUsuario);
+    Usuarios guardar(Usuarios usuario);
+    void eliminar(Integer codigoUsuario);
 }

@@ -3,78 +3,45 @@ package com.ecallejas.SistemaVentas.Controller;
 import com.ecallejas.SistemaVentas.Entity.Usuarios;
 import com.ecallejas.SistemaVentas.Service.UsuariosService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/api/usuarios")
 public class UsuariosController {
 
     @Autowired
     private UsuariosService service;
 
-    // LOGIN
-    @GetMapping("/usuario")
-    public String login() {
-        return "login";
+    // LISTAR
+    @GetMapping
+    public List<Usuarios> listar() {
+        return service.listar();
     }
 
-    @PostMapping("/login")
-    public String validar(@RequestParam String username,
-                          @RequestParam String password,
-                          Model model) {
-
-        Usuarios u = service.login(username, password);
-
-        if (u != null) {
-            return "redirect:/home";
-        } else {
-            model.addAttribute("error", "Credenciales incorrectas");
-            return "login";
-        }
+    // OBTENER POR ID
+    @GetMapping("/{id}")
+    public Usuarios obtener(@PathVariable Integer id) {
+        return service.obtenerPorId(id);
     }
 
-    // REGISTRO
-    @GetMapping("/registro")
-    public String registro() {
-        return "crearcuenta";
+    // GUARDAR
+    @PostMapping
+    public Usuarios guardar(@RequestBody Usuarios usuario) {
+        return service.guardar(usuario);
     }
 
-    @PostMapping("/registro")
-    public String guardar(@RequestParam String username,
-                          @RequestParam String password,
-                          Model model) {
-
-        Usuarios u = service.registrar(username, password);
-
-        if (u == null) {
-            model.addAttribute("error", "El usuario ya existe");
-            return "crearcuenta";
-        }
-
-        return "redirect:/usuario";
-    }
-
-    // LISTA
-    @GetMapping("/listausuarios")
-    public String listar(Model model) {
-        List<Usuarios> lista = service.listar();
-        model.addAttribute("usuarios", lista);
-        return "usuarios";
+    // ACTUALIZAR
+    @PutMapping("/{id}")
+    public Usuarios actualizar(@PathVariable Integer id, @RequestBody Usuarios usuario) {
+        usuario.setCodigoUsuario(id);
+        return service.guardar(usuario);
     }
 
     // ELIMINAR
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
+    @DeleteMapping("/{id}")
+    public void eliminar(@PathVariable Integer id) {
         service.eliminar(id);
-        return "redirect:/usuarios";
-    }
-
-    // HOME
-    @GetMapping("/home")
-    public String home() {
-        return "home";
     }
 }
