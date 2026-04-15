@@ -1,246 +1,257 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>CRUD Usuarios</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios</title>
 
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
 
-    :root{
-      --bg:#f4f6f9;
-      --primary:#10b981;
-      --text:#1f2937;
-      --border:#e5e7eb;
-    }
+        :root{
+          --bg:#f4f6f9;
+          --primary:#10b981;
+          --text:#1f2937;
+          --border:#e5e7eb;
+        }
 
-    body{font-family:'Poppins';background:var(--bg);}
+        body{font-family:'Poppins';background:var(--bg);}
 
-    /* TOP */
-    .top{
-      background:var(--primary);
-      color:#fff;
-      padding:15px 20px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
+        /* TOP */
+        .top{
+          background:var(--primary);
+          color:#fff;
+          padding:15px 20px;
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+        }
 
-    .btn{
-      background:var(--primary);
-      color:#fff;
-      border:none;
-      padding:8px 12px;
-      border-radius:6px;
-      cursor:pointer;
-      margin-right:5px;
-    }
+        .btn{
+          background:var(--primary);
+          color:#fff;
+          border:none;
+          padding:8px 12px;
+          border-radius:6px;
+          cursor:pointer;
+          margin-right:5px;
+        }
 
-    .btn-home{
-      background:#ffffff;
-      color:var(--primary);
-      border:2px solid #ffffff;
-      padding:8px 14px;
-      border-radius:8px;
-      font-weight:600;
-      cursor:pointer;
-      transition:all .2s ease;
-    }
+        .btn-home{
+          background:#ffffff;
+          color:var(--primary);
+          border:2px solid #ffffff;
+          padding:8px 14px;
+          border-radius:8px;
+          font-weight:600;
+          cursor:pointer;
+          transition:all .2s ease;
+        }
 
-    .btn-home:hover{
-      background:#0f766e;
-      color:#fff;
-      border-color:#0f766e;
-      transform:translateY(-1px);
-    }
+        .btn-home:hover{
+          background:#0f766e;
+          color:#fff;
+          border-color:#0f766e;
+          transform:translateY(-1px);
+        }
 
-    .container{padding:20px;}
+        .container{padding:20px;}
 
-    table{
-      width:100%;
-      background:#fff;
-      border-collapse:collapse;
-    }
+        table{
+          width:100%;
+          background:#fff;
+          border-collapse:collapse;
+        }
 
-    th,td{
-      padding:10px;
-      border-bottom:1px solid var(--border);
-    }
+        th,td{
+          padding:10px;
+          border-bottom:1px solid var(--border);
+        }
 
-    tr:hover{background:#f9fafb;}
+        tr:hover{background:#f9fafb;}
 
-    .form{
-      margin-bottom:15px;
-    }
+        .form{
+          margin-bottom:15px;
+        }
 
-    input{
-      padding:8px;
-      margin-right:5px;
-      border:1px solid var(--border);
-      border-radius:6px;
-    }
-  </style>
+        input{
+          padding:8px;
+          margin-right:5px;
+          border:1px solid var(--border);
+          border-radius:6px;
+        }
+    </style>
 </head>
 
 <body>
 
-<h2>Gestión de Usuarios</h2>
+<div class="top">
+    <h2>Usuarios</h2>
+    <button class="btn-home" onclick="window.location.href='/home'">Principal</button>
+</div>
 
-<!-- FORMULARIO -->
-<input type="hidden" id="codigoUsuario">
+<div class="container">
 
-<input type="text" id="username" placeholder="Username">
-<input type="password" id="password" placeholder="Password">
-<input type="email" id="email" placeholder="Email">
-<input type="text" id="rol" placeholder="Rol">
-<input type="number" id="estado" placeholder="Estado">
+    <!-- FORMULARIO -->
+    <div class="form">
 
-<br>
+        <input type="hidden" id="codigoUsuario">
 
-<button onclick="agregar()">Agregar</button>
-<button onclick="editar()">Editar</button>
-<button onclick="eliminar()">Eliminar</button>
-<button onclick="limpiarFormulario()">Limpiar</button>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <input type="email" id="email" placeholder="Email">
+        <input type="text" id="rol" placeholder="Rol">
+        <input type="number" id="estado" placeholder="Estado">
 
-<!-- TABLA -->
-<table>
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th>Username</th>
-    <th>Password</th>
-    <th>Email</th>
-    <th>Rol</th>
-    <th>Estado</th>
-  </tr>
-  </thead>
+        <button class="btn" onclick="agregar()">Agregar</button>
+        <button class="btn" onclick="editar()">Editar</button>
+        <button class="btn" onclick="eliminar()">Eliminar</button>
+        <button class="btn" onclick="limpiarFormulario()">Limpiar</button>
 
-  <tbody id="tabla"></tbody>
-</table>
+    </div>
+
+    <!-- TABLA -->
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Estado</th>
+        </tr>
+        </thead>
+
+        <tbody id="tabla"></tbody>
+    </table>
+
+</div>
 
 <!-- JS -->
 <script>
 
-  let indexActual = null;
+    let indexActual = null;
 
-  /// Listar
-  async function render() {
-    let res = await fetch("/api/usuarios");
-    let data = await res.json();
+    /// Listar
+    async function render() {
+      let res = await fetch("/api/usuarios");
+      let data = await res.json();
 
-    let tabla = document.getElementById("tabla");
-    tabla.innerHTML = "";
+      let tabla = document.getElementById("tabla");
+      tabla.innerHTML = "";
 
-    data.forEach((u) => {
-      tabla.innerHTML += `
-        <tr onclick="seleccionar(
-          ${u.codigoUsuario},
-          '${u.username}',
-          '${u.password}',
-          '${u.email}',
-          '${u.rol}',
-          '${u.estado}'
-        )">
-          <td>${u.codigoUsuario}</td>
-          <td>${u.username}</td>
-          <td>${u.password}</td>
-          <td>${u.email}</td>
-          <td>${u.rol}</td>
-          <td>${u.estado}</td>
-        </tr>
-      `;
-    });
-  }
-
-  /// Seleccionar
-  function seleccionar(codigoUsuario, username, password, email, rol, estado) {
-
-    indexActual = codigoUsuario;
-
-    document.getElementById("codigoUsuario").value = codigoUsuario;
-    document.getElementById("username").value = username;
-    document.getElementById("password").value = password;
-    document.getElementById("email").value = email;
-    document.getElementById("rol").value = rol;
-    document.getElementById("estado").value = estado;
-  }
-
-  /// Limpiar
-  function limpiarFormulario() {
-
-    document.getElementById("codigoUsuario").value = "";
-    document.getElementById("username").value = "";
-    document.getElementById("password").value = "";
-    document.getElementById("email").value = "";
-    document.getElementById("rol").value = "";
-    document.getElementById("estado").value = "";
-
-    indexActual = null;
-  }
-
-  /// Agregar
-  async function agregar() {
-
-    let usuario = {
-      username: document.getElementById("username").value,
-      password: document.getElementById("password").value,
-      email: document.getElementById("email").value,
-      rol: document.getElementById("rol").value,
-      estado: document.getElementById("estado").value
-    };
-
-    await fetch("/api/usuarios", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(usuario)
-    });
-
-    render();
-    limpiarFormulario();
-  }
-
-  /// Editar
-  async function editar() {
-
-    if (indexActual == null) {
-      alert("Selecciona un usuario");
-      return;
+      data.forEach((u) => {
+        tabla.innerHTML += `
+          <tr onclick="seleccionar(
+            ${u.codigoUsuario},
+            '${u.username}',
+            '${u.password}',
+            '${u.email}',
+            '${u.rol}',
+            '${u.estado}'
+          )">
+            <td>${u.codigoUsuario}</td>
+            <td>${u.username}</td>
+            <td>${u.password}</td>
+            <td>${u.email}</td>
+            <td>${u.rol}</td>
+            <td>${u.estado}</td>
+          </tr>
+        `;
+      });
     }
 
-    let usuario = {
-      username: document.getElementById("username").value,
-      password: document.getElementById("password").value,
-      email: document.getElementById("email").value,
-      rol: document.getElementById("rol").value,
-      estado: document.getElementById("estado").value
-    };
+    /// Seleccionar
+    function seleccionar(codigoUsuario, username, password, email, rol, estado) {
 
-    await fetch(`/api/usuarios/${indexActual}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(usuario)
-    });
+      indexActual = codigoUsuario;
 
-    render();
-    limpiarFormulario();
-  }
-
-  /// Eliminar
-  async function eliminar() {
-
-    if (indexActual == null) {
-      alert("Selecciona un usuario");
-      return;
+      document.getElementById("codigoUsuario").value = codigoUsuario;
+      document.getElementById("username").value = username;
+      document.getElementById("password").value = password;
+      document.getElementById("email").value = email;
+      document.getElementById("rol").value = rol;
+      document.getElementById("estado").value = estado;
     }
 
-    await fetch(`/api/usuarios/${indexActual}`, {
-      method: "DELETE"
-    });
+    /// Limpiar
+    function limpiarFormulario() {
+
+      document.getElementById("codigoUsuario").value = "";
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("rol").value = "";
+      document.getElementById("estado").value = "";
+
+      indexActual = null;
+    }
+
+    /// Agregar
+    async function agregar() {
+
+      let usuario = {
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value,
+        email: document.getElementById("email").value,
+        rol: document.getElementById("rol").value,
+        estado: document.getElementById("estado").value
+      };
+
+      await fetch("/api/usuarios", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(usuario)
+      });
+
+      render();
+      limpiarFormulario();
+    }
+
+    /// Editar
+    async function editar() {
+
+      if (indexActual == null) {
+        alert("Selecciona un usuario");
+        return;
+      }
+
+      let usuario = {
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value,
+        email: document.getElementById("email").value,
+        rol: document.getElementById("rol").value,
+        estado: document.getElementById("estado").value
+      };
+
+      await fetch(`/api/usuarios/${indexActual}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(usuario)
+      });
+
+      render();
+      limpiarFormulario();
+    }
+
+    /// Eliminar
+    async function eliminar() {
+
+      if (indexActual == null) {
+        alert("Selecciona un usuario");
+        return;
+      }
+
+      await fetch(`/api/usuarios/${indexActual}`, {
+        method: "DELETE"
+      });
+
+      render();
+      limpiarFormulario();
+    }
 
     render();
-    limpiarFormulario();
-  }
-  render();
 
 </script>
 
