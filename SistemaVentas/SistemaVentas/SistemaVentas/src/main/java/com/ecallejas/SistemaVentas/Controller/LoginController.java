@@ -2,6 +2,7 @@ package com.ecallejas.SistemaVentas.Controller;
 
 import com.ecallejas.SistemaVentas.Entity.Usuarios;
 import com.ecallejas.SistemaVentas.Service.UsuariosService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,15 +20,21 @@ public class LoginController {
         return "login";
     }
 
-    // VALIDAR LOGIN
     @PostMapping("/login")
     public String login(@RequestParam String username,
                         @RequestParam String password,
-                        Model model) {
+                        Model model,
+                        HttpSession session) {
 
         try {
             Usuarios u = service.login(username, password);
+
+            // 🔥 GUARDAR SESIÓN (ESTO TE FALTABA)
+            session.setAttribute("usuarioLogueado", u.getUsername());
+            session.setAttribute("rol", u.getRol());
+
             return "redirect:/home";
+
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "login";
