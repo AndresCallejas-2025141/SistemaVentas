@@ -137,7 +137,7 @@
             <h2>Crear Cuenta</h2>
 
             <!-- FORMULARIO -->
-            <form th:action="@{/registro}" method="post">
+            <form th:action="@{/registro}" method="post" onsubmit="redirigirLogin()">
 
                 <div class="field">
                     <label>Usuario</label>
@@ -164,6 +164,14 @@
     </div>
 
 </div>
+
+<script>
+    function redirigirLogin(){
+        setTimeout(() => {
+            window.location.href = "/login";
+        }, 500);
+    }
+</script>
 
 </body>
 </html>
