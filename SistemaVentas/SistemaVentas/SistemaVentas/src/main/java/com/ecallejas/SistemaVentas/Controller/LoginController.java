@@ -29,7 +29,7 @@ public class LoginController {
         try {
             Usuarios u = service.login(username, password);
 
-            // 🔥 GUARDAR SESIÓN (ESTO TE FALTABA)
+            //GUARDAR SESIÓN
             session.setAttribute("usuarioLogueado", u.getUsername());
             session.setAttribute("rol", u.getRol());
 
@@ -54,7 +54,7 @@ public class LoginController {
 
         try {
             service.registrar(username, password);
-            return "redirect:/usuario";
+            return "redirect:/login";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "crearcuenta";
